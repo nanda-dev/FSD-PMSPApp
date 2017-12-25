@@ -1,21 +1,15 @@
-/*import { Component } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'pm-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [ ProductService ]
+  providers: [ ]
   
 })
-export class AppComponent {
-  title = 'Angular: Getting Started';
-}
-*/
-import { Component } from '@angular/core';
 
-import { ProductService } from './products/product.service';
 
-@Component({
+/*@Component({
 	selector: 'pm-root',
 	template: `
 		<div>
@@ -35,8 +29,8 @@ import { ProductService } from './products/product.service';
 		`,
 	
 
-})
+})*/
 
 export class AppComponent {
-	pageTitle: string = 'Project Management';
+	pageTitle: string = 'Project Manager';
 }

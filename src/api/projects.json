@@ -1,0 +1,22 @@
+[
+    {
+        "id": 101,
+		"name": "Insurance Agent Client Manager",
+		"managerId": 10001,
+		"priority": 10,
+		"startDate": "2018-01-05",
+		"endDate": "2018-04-03",
+		"status": "I",
+		"taskCount": 2
+    },
+    {
+        "id": 102,
+		"name": "Telecom Offers Upgrade",
+		"managerId": 10002,
+		"priority": 20,
+		"startDate": "2018-01-15",
+		"endDate": "2018-08-30",
+		"status": "I",
+		"taskCount": 2		
+    }
+]

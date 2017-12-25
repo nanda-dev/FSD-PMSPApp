@@ -1,0 +1,24 @@
+[
+    {
+        "id": 101,
+		"name": "Coding",
+		"projectId": 10001,
+		"parentTaskId": null,
+		"priority": null,		
+		"userId": null,
+		"startDate": null,
+		"endDate": null,
+		"status": null
+    },
+    {
+        "id": 102,
+		"name": "Create angular services",
+		"projectId": 10001,
+		"parentTaskId": 101,
+		"priority": 10,		
+		"userId": 10001,
+		"startDate": "2018-01-05",
+		"endDate": "2018-04-03",
+		"status": "I"
+    }
+]

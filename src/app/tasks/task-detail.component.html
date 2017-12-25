@@ -1,0 +1,79 @@
+<div class="panel panel-primary">
+    <div class="panel-body">
+		<div class='row'>            
+			<label class="col-md-1 col-md-offset-0 control-label" 
+							   for="projectId">Project</label>
+			<div class="col-md-4">
+				<input class="form-control" 
+					   id="projectId" 
+					   type="text" 
+					   placeholder="Select Project ID" 
+					   formControlName="projectId" />
+			</div>	
+			<div class="col-md-1">					
+				<button class="btn btn-default float-right"
+						type="button" (click)='popUpSelectProject()'>
+					Search
+				</button>					
+			</div>
+			<div class="col-md-6" align=right>
+				<span>
+					Sort Task By:					
+				</span>
+				<span>
+					<button class="btn btn-default" type="button">
+						Start Date
+					</button>
+				</span>
+				<span>
+					<button class="btn btn-default" type="button">
+						End Date
+					</button>
+				</span>
+				<span>
+					<button class="btn btn-default" type="button">
+						Priority
+					</button>
+				</span>
+				<span>
+					<button class="btn btn-default" type="button">
+						Completed
+					</button>
+				</span>
+			</div>            
+		</div>
+		<hr class='dotted-hr'/>
+		<div class='table-responsive'>
+            <table class='table' *ngIf='tasks && tasks.length'>
+				<tbody>
+					<tr>
+						<th>Task</th>
+						<th>Parent</th>
+						<th>Priority</th>
+						<th>Start</th>
+						<th>End</th>
+						<th></th>
+						<th></th>
+					</tr>
+					<tr *ngFor='let task of tasks'>
+						<td>{{task.name}}</td>
+						<td>{{task.parentTaskId}}</td>
+						<td>{{task.priority}}</td>
+						<td>{{task.startDate}}</td>
+						<td>{{task.endDate}}</td>
+						<td>
+							<button class="btn btn-default" type="button" (click)='editTask(task.id)'>
+								Edit
+							</button>
+						</td>
+						<td>
+							<button class="btn btn-default" type="button" (click)='endTask(task.id)'>
+								End Task
+							</button>
+						</td>						
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

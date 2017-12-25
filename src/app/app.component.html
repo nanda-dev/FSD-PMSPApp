@@ -3,12 +3,12 @@
 	<div>
 		<nav class='navbar navbar-default'>
 			<div class='container-fluid'>
-				<a class='navbar-brand'>{{pageTitle}}</a>
+				<a class='navbar-brand' [routerLink]="['/welcome']">{{pageTitle}}</a>
 				<ul class='nav navbar-nav'>
-					<li><a [routerLink]="['/welcome']">Add Project</a></li>
-					<li><a [routerLink]="['/products']">Add Task</a></li>
-					<li><a [routerLink]="['/products']">Add User</a></li>
-					<li><a [routerLink]="['/products']">View Task</a></li>
+					<li><a [routerLink]="['/projects']">Add Project</a></li>
+					<li><a [routerLink]="['/taskupdate']">Add Task</a></li>
+					<li><a [routerLink]="['/users']">Add User</a></li>
+					<li><a [routerLink]="['/tasks']">View Task</a></li>
 				</ul>
 			</div>
 		</nav>

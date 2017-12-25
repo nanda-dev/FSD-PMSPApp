@@ -1,0 +1,170 @@
+<div class="panel panel-primary">
+    <div class="panel-body">
+        <form class="form-horizontal"
+              novalidate
+              (ngSubmit)="save()"
+              [formGroup]="userForm">
+            <fieldset>
+                <div class="form-group"
+                    [ngClass]="{'has-error': (userForm.get('firstName').touched || 
+                                              userForm.get('firstName').dirty) &&
+                                              !userForm.get('firstName').valid }">
+                    <label class="col-md-2 control-label" 
+                           for="firstNameId">First Name</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="firstNameId" 
+                               type="text" 
+							   required 
+                               placeholder="First Name (required)" 
+                               formControlName="firstName" />
+                        <span class="help-block" *ngIf="(userForm.get('firstName').touched || 
+                                                         userForm.get('firstName').dirty) && 
+                                                         userForm.get('firstName').errors">
+                            <span *ngIf="userForm.get('firstName').errors.required">
+                                Please enter your first name.
+                            </span>
+                            <span *ngIf="userForm.get('firstName').errors.minlength">
+                                The first name must be longer than 3 characters.
+                            </span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group"
+                    [ngClass]="{'has-error': (userForm.get('lastName').touched || userForm.get('lastName').dirty) && !userForm.get('lastName').valid }">
+                    <label class="col-md-2 control-label" 
+                        for="lastNameId">Last Name</label>
+
+                    <div class="col-md-8">
+                        <input class="form-control" 
+                               id="lastNameId" 
+                               type="text" 
+                               placeholder="Last Name (required)" 
+                               formControlName="lastName" />
+                        <span class="help-block" *ngIf="(userForm.get('lastName').touched || userForm.get('lastName').dirty) && userForm.get('lastName').errors">
+                            <span *ngIf="userForm.get('lastName').errors.required">
+                                Please enter your last name.
+                            </span>
+                             <span *ngIf="userForm.controls.lastName.errors.maxlength">
+                                The last name must be less than 50 characters.
+                            </span>
+                       </span>
+                    </div>
+                </div>
+
+                <div class="form-group"
+                    [ngClass]="{'has-error': (userForm.get('empId').touched || userForm.get('empId').dirty) && !userForm.get('empId').valid }">
+                    <label class="col-md-2 control-label" 
+                        for="empId">Employee ID</label>
+
+                    <div class="col-md-3">
+                        <input class="form-control" 
+                               id="empId" 
+                               type="text" 
+                               placeholder="Employee ID (required)" 
+                               formControlName="empId" />
+                        <span class="help-block" *ngIf="(userForm.get('empId').touched || userForm.get('empId').dirty) && userForm.get('empId').errors">
+                            <span *ngIf="userForm.get('empId').errors.required">
+                                Please enter the employee Id.
+                            </span>
+                             <span *ngIf="userForm.controls.empId.errors.maxlength">
+                                The last name must be less than 10 characters.
+                            </span>
+                       </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-8 col-md-offset-2" align=right>
+                        <span>
+                            <button class="btn btn-primary float-right"
+                                    type="submit"
+                                    [disabled]="!userForm.valid">
+                                {{ saveButtonLabel }}
+                            </button>
+                        </span>
+                        <span>
+                            <button class="btn btn-default float-right"
+                                    type="button" (click)='resetForm()'>
+                                Reset
+                            </button>
+                        </span>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+		<hr/>
+		
+        <div class='row' align=center>
+            <div class='col-sm-4 col-sm-offset-1' align=left>
+                <input type='text' placeholder='Search...' [(ngModel)]='listFilter'/>
+            </div>
+			<div class="col-sm-4 col-sm-offset-2">
+				<span>
+					Sort:					
+				</span>
+				<span>
+					<button class="btn btn-default" type="button">
+						First Name
+					</button>
+				</span>
+				<span>
+					<button class="btn btn-default" type="button">
+						Last Name
+					</button>
+				</span>
+				<span>
+					<button class="btn btn-default" type="button">
+						Id
+					</button>
+				</span>
+            </div>
+        </div>
+		<hr class='style6'/>
+		<div class='table-responsive'>
+            <table class='table' *ngIf='users && users.length'>
+				<tbody>
+					<tr *ngFor='let user of filteredUsers'>
+						<td>
+							<table class='table'>
+								<tbody>
+									<tr>
+										<td align=left>
+											<input type='text' disabled class='col-sm-8' [value]='user.firstName'/>											
+										</td>
+										<td>											
+											<button class="btn btn-default" type="button" (click)='editUser(user)'>
+												Edit
+											</button>																	
+										</td>
+									</tr>
+									<tr>
+										<td>											
+											<input type='text' disabled class='col-sm-8' [value]='user.lastName'/>											
+										</td>
+										<td>											
+											<button class="btn btn-default" type="button">
+												Delete
+											</button>											
+										</td>
+									</tr>
+									<tr>
+										<td colspan=2>										
+											<input type='text' disabled class='col-sm-6' [value]='user.id'/>											
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>					
+					</tr>
+			</table>
+		</div>
+    </div>
+</div>
+<br>Dirty: {{ userForm.dirty }} 
+<br>Touched: {{ userForm.touched }}
+<br>Valid: {{ userForm.valid }}
+<br>Value: {{ userForm.value | json }}
+<br>Users: {{ users | json }}

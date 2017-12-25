@@ -1,0 +1,135 @@
+<div class="panel panel-primary">
+    <div class="panel-body">
+        <form class="form-horizontal"
+              novalidate
+              (ngSubmit)="save()"
+              [formGroup]="taskForm">
+				<fieldset>
+					<div class='form-group row' align=left>
+						<label class="col-md-2 col-md-offset-0 control-label" 
+								   for="projectId">Project</label>
+						<div class="col-md-4 col-md-offset-0">
+							<input class="form-control" 
+								   id="projectId" 
+								   type="text" 
+								   placeholder="Select Project ID" 
+								   formControlName="projectId" />
+						</div>	
+						<div class="col-md-3 col-md-offset-1">					
+							<button class="btn btn-default float-right"
+									type="button" (click)='popUpSelectProject()'>
+								Search
+							</button>					
+						</div>
+					</div>
+					
+					<div class='form-group row' align=left>
+						<label class="col-md-2 col-md-offset-0 control-label" 
+								   for="taskNameId">Task</label>
+						<div class="col-md-6 col-md-offset-0">
+							<input class="form-control" 
+								   id="taskNameId" 
+								   type="text" 
+								   placeholder="Task Name" 
+								   formControlName="taskName" />
+						</div>				
+					</div>
+					
+					<div class="form-group">
+						<div class="col-md-offset-0 col-md-6 checkbox" >
+							<label>
+								<input id="isParentId"
+									   type="checkbox"
+									   formControlName = "isParent" >
+								Parent Task
+							</label>
+						</div>
+					</div>
+					
+					<div class='form-group row' align=left>
+						<label class="col-md-2 col-md-offset-0 control-label" 
+								   for="priorityId">Priority</label>
+						<div class="col-md-6 col-md-offset-0">
+							<input class="form-control" 
+								   id="priorityId" 
+								   type="text" 						    
+								   formControlName="priority" />
+						</div>				
+					</div>
+					
+					<div class='form-group'>
+						<label class="col-md-2 col-md-offset-0 control-label" 
+								   for="parentTaskId">Parent Task</label>
+						<div class="col-md-4 col-md-offset-0">
+							<input class="form-control" 
+								   id="parentTaskId" 
+								   type="text" 
+								   placeholder="Select Parent Task" 
+								   formControlName="parentTaskId" />
+						</div>	
+						<div class="col-md-1 col-md-offset-1">					
+							<button class="btn btn-default float-right"
+									type="button" (click)='popUpSelectProject()'>
+								Search
+							</button>					
+						</div>
+					</div>
+					
+					<div class='form-group'>
+						<label class="col-md-2 col-md-offset-0 control-label" 
+								   for="startDateId">Start Date</label>
+						<div class="col-md-2 col-md-offset-0">
+							<input class="form-control" 
+								   id="startDateId" 
+								   type="text" 
+								   formControlName="startDate" />
+						</div>	
+						<label class="col-md-2 col-md-offset-0 control-label" 
+								   for="endDateId">End Date</label>
+						<div class="col-md-2 col-md-offset-0">
+							<input class="form-control" 
+								   id="endDateId" 
+								   type="text" 
+								   formControlName="endDate" />
+						</div>
+					</div>
+					
+					<div class='form-group'>
+						<label class="col-md-2 col-md-offset-0 control-label" 
+								   for="userId">User</label>
+						<div class="col-md-4 col-md-offset-0">
+							<input class="form-control" 
+								   id="userId" 
+								   type="text" 
+								   placeholder="Select User" 
+								   formControlName="userId" />
+						</div>	
+						<div class="col-md-1 col-md-offset-1">					
+							<button class="btn btn-default float-right"
+									type="button" (click)='popUpSelectProject()'>
+								Search
+							</button>					
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<div class="col-md-6 col-md-offset-2" align=right>
+							<span>
+								<button class="btn btn-primary float-right"
+										type="submit"
+										[disabled]="!taskForm.valid">
+									{{ saveButtonLabel }}
+								</button>
+							</span>
+							<span>
+								<button class="btn btn-default float-right"
+										type="button" (click)='resetForm()'>
+									Reset
+								</button>
+							</span>
+						</div>
+					</div>				
+				</fieldset>
+		</form>
+	</div>
+</div>
