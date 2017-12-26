@@ -1,8 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef  } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
 import { IProject } from './project';
+import { IUser } from '../users/user';
 import { ProjectService } from './project.service';
+import { UserService } from '../users/user.service';
 
 @Component({
   selector: 'pm-project-detail',
@@ -10,12 +15,17 @@ import { ProjectService } from './project.service';
   styleUrls: ['./project-detail.component.css']
 })
 export class ProjectDetailComponent implements OnInit {
+	bsConfig: Partial<BsDatepickerConfig>;
+	modalRef: BsModalRef;
 	projectForm: FormGroup;
 	projects: IProject[];
 	filteredProjects: IProject[];
 	errorMessage: string;
 	saveButtonLabel: string = 'Add';
+	managerId: number;
 	isEdit: boolean = false;
+	users: IUser[];
+	filteredUsers: IUser[];
 	
 	_listFilter: string;
 	get listFilter(): string {
@@ -25,15 +35,39 @@ export class ProjectDetailComponent implements OnInit {
 		this._listFilter = value;
 		this.filteredProjects = this.listFilter ? this.performFilter(this.listFilter) : this.projects;
 	}
+	
+	_usersFilter: string;
+	get usersFilter(): string {
+		return this._usersFilter;
+	}
+	set usersFilter(value: string) {
+		this._usersFilter = value;
+		this.filteredUsers = this.usersFilter ? this.performFilterUsers(this.usersFilter) : this.users;
+	}
 
 	constructor(private projSvc: ProjectService, 
-				private fb: FormBuilder) { }
+				private fb: FormBuilder,
+				private modalService: BsModalService, 
+				private usrSvc: UserService) { }
+				
+	
+	
+	test() {
+			alert('test');
+	}
 
 	ngOnInit() {
+		this.bsConfig = Object.assign({}, { containerClass: 'theme-dark-blue'});
 		this.projSvc.getProjects()
                 .subscribe(projects => {
 							this.projects = projects;
 							this.filteredProjects = this.projects;
+							},
+                           error => this.errorMessage = <any>error);
+		this.usrSvc.getUsers()
+                .subscribe(users => {
+							this.users = users;
+							this.filteredUsers = this.users;
 							},
                            error => this.errorMessage = <any>error);
 		
@@ -41,8 +75,8 @@ export class ProjectDetailComponent implements OnInit {
 			projectName: '',
 			managerId: '',
 			priority: '', 
-			startDate: '', 
-			endDate: '',
+			hasDate: false, 
+			date: [], 
 			id: ''
 		});
 	}
@@ -53,8 +87,15 @@ export class ProjectDetailComponent implements OnInit {
               (project.name.toLocaleLowerCase().indexOf(filterBy) !== -1) );
 	}
 	
+	performFilterUsers(filterBy: string): IUser[] {
+        filterBy = filterBy.toLocaleLowerCase();
+        return this.users.filter((user: IUser) =>
+              (user.firstName.toLocaleLowerCase().indexOf(filterBy) !== -1) 
+			  || (user.lastName.toLocaleLowerCase().indexOf(filterBy) !== -1));
+	}
+	
 	editProject(project: IProject): void {
-		console.log('project.id=' + project.id);
+		//console.log('edit project.id=' + project.id);
 		this.projectForm.patchValue({
 			projectName: project.name,
 			managerId: project.managerId,
@@ -68,7 +109,7 @@ export class ProjectDetailComponent implements OnInit {
 	}
 	
 	suspendProject(projectId: number): void {
-		console.log('suspend project: ' + projectId);
+		//console.log('suspend project: ' + projectId);
 	}
 	
 	resetForm(): void {
@@ -77,8 +118,26 @@ export class ProjectDetailComponent implements OnInit {
 	}
 	
 	save(): void {
-		console.log('Save Project:' + JSON.stringify(this.projectForm));//ToDo
+		//console.log('Save Project:' + JSON.stringify(this.projectForm));//ToDo
 		
+	}
+	check(): void {
+		//console.log(this.projectForm.controls['hasDate'].value);
+		if(this.projectForm.controls['hasDate'].value){
+			this.projectForm.controls['date'].disable();				
+		}
+		else {
+			this.projectForm.controls['date'].enable();				
+		}
+	}
+	
+	showManagerModal(template: TemplateRef<any>) {
+		this.modalRef = this.modalService.show(template);
+	}
+	
+	selectUser(user: any): void {
+		console.log(user);
+		this.projectForm.patchValue({managerId: user.id});
 	}
 
 }

@@ -9,10 +9,10 @@
                     [ngClass]="{'has-error': (projectForm.get('projectName').touched || 
                                               projectForm.get('projectName').dirty) &&
                                               !projectForm.get('projectName').valid }">
-                    <label class="col-md-2 control-label" 
+                    <label class="col-xs-2 control-label" 
                            for="projectNameId">Project Name</label>
 
-                    <div class="col-md-8">
+                    <div class="col-xs-8">
                         <input class="form-control" 
                                id="projectNameId" 
                                type="text" 
@@ -30,38 +30,46 @@
                         </span>
                     </div>
                 </div>
-
                 <div class="form-group">
-                    <label class="col-md-2 control-label" 
-                        for="startDateId">Set Start and End Date</label>
-
-                    <div class="col-sm-4">
-                        <input class="form-control" 
-                               id="startDateId" 
-                               type="text" 
-                               formControlName="startDate" />
-						<input class="form-control" 
-							   id="endDate" 
-							   type="text" 
-							   formControlName="endDate" />
-                        
-                    </div>
+                    <div class="col-xs-8 col-xs-offset-2">
+						<label>
+						  <input type="checkbox" formControlName="hasDate" (change)="check()"> Set Start Date and End Date 
+						</label>
+						<input type="text" class="form-control" placeholder="Start Date - End Date" bsDaterangepicker formControlName="date" [bsConfig]="bsConfig" style="margin-left: 10px; width: auto; display: inline-block;"/> 
+					</div>
                 </div>
 
                 <div class="form-group">
-                    <label class="col-md-2 control-label" 
+                    <label class="col-xs-2 control-label" 
                         for="priorityId">Priority</label>
 
-                    <div class="col-md-3">
+                    <div class="col-xs-8">
                         <input class="form-control" 
                                id="priorityId" 
-                               type="text" 
-                               formControlName="priority" />                        
+                               type="range" 
+							   min="0"
+							   max="30"
+							   step="1"
+							   formControlName="priority" />  <span style='display: inline'>{{projectForm.get('priority').value}}</span>
                     </div>
+                </div>
+				<div class="form-group">
+                    <label class="col-xs-2 control-label" 
+                        for="managerId">Manager</label>
+
+                    <div class="col-xs-6">
+                        <input class="form-control" 
+                               id="managerId" 
+                               type="text" 
+                               formControlName="managerId" />                        
+                    </div>
+					<div class="col-xs-2 text-right">
+						<button class="btn btn-default" type="button" (click)="showManagerModal(mgrModal)">Search</button>
+					</div>
                 </div>
 
                 <div class="form-group">
-                    <div class="col-md-8 col-md-offset-2" align=right>
+                    <div class="col-xs-8 col-xs-offset-2" align=right>
                         <span>
                             <button class="btn btn-primary float-right"
                                     type="submit"
@@ -83,7 +91,7 @@
 		
         <div class='row' align=center>
             <div class='col-sm-3 col-sm-offset-0' align=left>
-                <input type='text' placeholder='Search...' [(ngModel)]='listFilter'/>
+                <input class='form-control' type='text' placeholder='Search...' [(ngModel)]='listFilter'/>
             </div>
 			<div class="col-sm-9 col-sm-offset-0" align=right>
 				<span>
@@ -161,3 +169,37 @@
 <br>Valid: {{ projectForm.valid }}
 <br>Value: {{ projectForm.value | json }}
 <br>Projects: {{ projects | json }}
+
+
+<ng-template #mgrModal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Select Manager ID</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+			<div style="margin-bottom:10px;">
+                <input type='text' class="form-control" placeholder='Search...' [(ngModel)]='usersFilter'/>
+            </div>
+			<div class='table-responsive'>
+				<table class='table' *ngIf='users && users.length'>
+					<tbody>
+						<tr>
+							<th></th>
+							<th>ID</th>
+							<th>Name</th>							
+						</tr>
+						<tr *ngFor='let user of filteredUsers'>
+							<td><input name="user" type="radio" [value]="user"  [(ngModel)]="selectedUser" (change)='selectUser(selectedUser)' /></td>
+							<td>{{user.id}}</td>
+							<td>{{user.firstName}} {{user.lastName}}</td>						
+						</tr>
+					</tbody>
+				</table>					
+			</div>
+	</div>
+	<div class="modal-footer text-right">
+		<button class="btn btn-primary" type="button" (click)='modalRef.hide()'>OK</button>
+	</div>
+</ng-template>

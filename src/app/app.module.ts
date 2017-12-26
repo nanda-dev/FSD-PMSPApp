@@ -8,6 +8,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
+import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { AppComponent } from './app.component';
 import { ConvertToSpacesPipe } from './shared/convert-to-spaces.pipe';
@@ -38,6 +40,8 @@ import { TaskService } from './tasks/task.service';
 	ReactiveFormsModule, 
 	HttpClientModule, 
 	HttpModule, 
+	BsDatepickerModule.forRoot(), 
+	ModalModule.forRoot(), 
 	RouterModule.forRoot([
 		{path: 'users', component: UserDetailComponent},
 		{path: 'projects', component: ProjectDetailComponent},

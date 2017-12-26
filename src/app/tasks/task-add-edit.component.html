@@ -5,25 +5,25 @@
               (ngSubmit)="save()"
               [formGroup]="taskForm">
 				<fieldset>
-					<div class='form-group row' align=left>
-						<label class="col-md-2 col-md-offset-0 control-label" 
+					<div class='form-group row'>
+						<label class="col-md-2 control-label" 
 								   for="projectId">Project</label>
-						<div class="col-md-4 col-md-offset-0">
+						<div class="col-md-4">
 							<input class="form-control" 
 								   id="projectId" 
 								   type="text" 
 								   placeholder="Select Project ID" 
 								   formControlName="projectId" />
 						</div>	
-						<div class="col-md-3 col-md-offset-1">					
+						<div class="col-md-3">					
 							<button class="btn btn-default float-right"
-									type="button" (click)='popUpSelectProject()'>
+									type="button" (click)='showModalPopUp(projModal)'>
 								Search
 							</button>					
 						</div>
 					</div>
 					
-					<div class='form-group row' align=left>
+					<div class='form-group row'>
 						<label class="col-md-2 col-md-offset-0 control-label" 
 								   for="taskNameId">Task</label>
 						<div class="col-md-6 col-md-offset-0">
@@ -36,7 +36,7 @@
 					</div>
 					
 					<div class="form-group">
-						<div class="col-md-offset-0 col-md-6 checkbox" >
+						<div class="col-xs-8 col-xs-offset-2">
 							<label>
 								<input id="isParentId"
 									   type="checkbox"
@@ -45,15 +45,20 @@
 							</label>
 						</div>
 					</div>
+				
 					
-					<div class='form-group row' align=left>
+					
+					<div class='form-group row'>
 						<label class="col-md-2 col-md-offset-0 control-label" 
 								   for="priorityId">Priority</label>
 						<div class="col-md-6 col-md-offset-0">
 							<input class="form-control" 
-								   id="priorityId" 
-								   type="text" 						    
-								   formControlName="priority" />
+                               id="priorityId" 
+                               type="range" 
+							   min="0"
+							   max="30"
+							   step="1"
+							   formControlName="priority" />  <span style='display: inline'>{{taskForm.get('priority').value}}</span>
 						</div>				
 					</div>
 					
@@ -69,7 +74,7 @@
 						</div>	
 						<div class="col-md-1 col-md-offset-1">					
 							<button class="btn btn-default float-right"
-									type="button" (click)='popUpSelectProject()'>
+									type="button" (click)='showModalPopUp(taskModal)'>
 								Search
 							</button>					
 						</div>
@@ -79,18 +84,12 @@
 						<label class="col-md-2 col-md-offset-0 control-label" 
 								   for="startDateId">Start Date</label>
 						<div class="col-md-2 col-md-offset-0">
-							<input class="form-control" 
-								   id="startDateId" 
-								   type="text" 
-								   formControlName="startDate" />
+							<input type="text" class="form-control" placeholder="Datepicker" bsDatepicker formControlName="startDate" />
 						</div>	
 						<label class="col-md-2 col-md-offset-0 control-label" 
 								   for="endDateId">End Date</label>
 						<div class="col-md-2 col-md-offset-0">
-							<input class="form-control" 
-								   id="endDateId" 
-								   type="text" 
-								   formControlName="endDate" />
+							<input type="text" class="form-control" placeholder="Datepicker" bsDatepicker formControlName="endDate" />
 						</div>
 					</div>
 					
@@ -106,14 +105,14 @@
 						</div>	
 						<div class="col-md-1 col-md-offset-1">					
 							<button class="btn btn-default float-right"
-									type="button" (click)='popUpSelectProject()'>
+									type="button" (click)='showModalPopUp(usrModal)'>
 								Search
 							</button>					
 						</div>
 					</div>
 					
 					<div class="form-group">
-						<div class="col-md-6 col-md-offset-2" align=right>
+						<div class="col-md-6 col-md-offset-2">
 							<span>
 								<button class="btn btn-primary float-right"
 										type="submit"
@@ -133,3 +132,100 @@
 		</form>
 	</div>
 </div>
+
+<ng-template #usrModal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Select Manager ID</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+			<div style="margin-bottom:10px;">
+                <input type='text' class="form-control" placeholder='Search...' [(ngModel)]='usersFilter'/>
+            </div>
+			<div class='table-responsive'>
+				<table class='table' *ngIf='users && users.length'>
+					<tbody>
+						<tr>
+							<th></th>
+							<th>ID</th>
+							<th>Name</th>							
+						</tr>
+						<tr *ngFor='let user of filteredUsers'>
+							<td><input name="user" type="radio" [value]="user"  [(ngModel)]="selectedUser" (change)='selectUser(selectedUser)' /></td>
+							<td>{{user.id}}</td>
+							<td>{{user.firstName}} {{user.lastName}}</td>						
+						</tr>
+					</tbody>
+				</table>					
+			</div>
+	</div>
+	<div class="modal-footer text-right">
+		<button class="btn btn-primary" type="button" (click)='modalRef.hide()'>OK</button>
+	</div>
+</ng-template>
+<ng-template #taskModal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Select Parent Task ID</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+			<div style="margin-bottom:10px;">
+                <input type='text' class="form-control" placeholder='Search...' [(ngModel)]='tasksFilter'/>
+            </div>
+			<div class='table-responsive'>
+				<table class='table' *ngIf='tasks && tasks.length'>
+					<tbody>
+						<tr>
+							<th></th>
+							<th>ID</th>
+							<th>Name</th>							
+						</tr>
+						<tr *ngFor='let task of filteredTasks'>
+							<td><input name="task" type="radio" [value]="task"  [(ngModel)]="selectedTask" (change)='selectTask(selectedTask)' /></td>
+							<td>{{task.id}}</td>
+							<td>{{task.name}}</td>						
+						</tr>
+					</tbody>
+				</table>					
+			</div>
+	</div>
+	<div class="modal-footer text-right">
+		<button class="btn btn-primary" type="button" (click)='modalRef.hide()'>OK</button>
+	</div>
+</ng-template>
+<ng-template #projModal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Select Project ID</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+			<div style="margin-bottom:10px;">
+                <input type='text' class="form-control" placeholder='Search...' [(ngModel)]='projectsFilter'/>
+            </div>
+			<div class='table-responsive'>
+				<table class='table' *ngIf='projects && projects.length'>
+					<tbody>
+						<tr>
+							<th></th>
+							<th>ID</th>
+							<th>Name</th>							
+						</tr>
+						<tr *ngFor='let project of filteredProjects'>
+							<td><input name="project" type="radio" [value]="project"  [(ngModel)]="selectedProj" (change)='selectProj(selectedProject)' /></td>
+							<td>{{project.id}}</td>
+							<td>{{project.name}}</td>						
+						</tr>
+					</tbody>
+				</table>					
+			</div>
+	</div>
+	<div class="modal-footer text-right">
+		<button class="btn btn-primary" type="button" (click)='modalRef.hide()'>OK</button>
+	</div>
+</ng-template>

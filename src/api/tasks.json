@@ -3,12 +3,12 @@
         "id": 101,
 		"name": "Coding",
 		"projectId": 10001,
-		"parentTaskId": null,
-		"priority": null,		
-		"userId": null,
-		"startDate": null,
-		"endDate": null,
-		"status": null
+		"parentTaskId": "",
+		"priority": "",		
+		"userId": "",
+		"startDate": "",
+		"endDate": "",
+		"status": ""
     },
     {
         "id": 102,
