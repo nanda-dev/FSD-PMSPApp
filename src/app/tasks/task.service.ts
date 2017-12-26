@@ -6,6 +6,7 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/find';
 import 'rxjs/add/observable/of';
 
 import { ITask } from './task';
@@ -25,19 +26,20 @@ export class TaskService {
     }
 
     getTask(id: number): Observable<ITask> {
+		console.log('GETTASK');
         if (id === 0) {
-        return Observable.of(this.initializeTask());
+			return Observable.of(this.initializeTask());
         // return Observable.create((observer: any) => {
         //     observer.next(this.initializeProduct());
         //     observer.complete();
         // });
         };
         const url = `${this.baseUrl}/${id}`;
-        return this.http.get(this._taskUrl)
-            .map(this.extractData)
-            .do(data => console.log('getProduct: ' + JSON.stringify(data)))
-            .catch(this.handleError);
+        return this.getTasks()
+				.map(tasks => tasks.find(task => task.id === id));
     }
+	
+	
 
     deleteTask(id: number): Observable<Response> {
         let headers = new Headers({ 'Content-Type': 'application/json' });

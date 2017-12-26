@@ -20,6 +20,7 @@ export class TaskDetailComponent implements OnInit {
 	modalRef: BsModalRef;
 	projects: IProject[];
 	projectId: string;
+	selectedProj: IProject;
 	
 	constructor(private taskSvc: TaskService, 
 				private projSvc: ProjectService, 
@@ -50,9 +51,24 @@ export class TaskDetailComponent implements OnInit {
 		this.modalRef = this.modalService.show(template);
 	}
 	
-	selectProject(proj: any): void {
+	selectProject(proj: IProject): void {
 		console.log(proj);
-		this.projectId = proj.id;
+		this.selectedProj = proj;
+	}
+	
+	closePopUp(): void {
+		console.log('selectedProj==' + this.selectedProj);
+		if(this.selectedProj){
+			this.projectId = '' + this.selectedProj.id;
+			this.taskSvc.getTasks()
+                .subscribe(tasks => {
+										this.tasks = tasks.filter( (task: ITask) => task.projectId === this.selectedProj.id);
+										console.log('tasksByProj='+JSON.stringify(this.tasks));
+									},
+                           error => this.errorMessage = <any>error);
+		}
+		//modalRef.hide()
+		this.modalRef.hide();
 	}
 
 }

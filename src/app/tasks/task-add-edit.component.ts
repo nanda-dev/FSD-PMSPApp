@@ -34,6 +34,7 @@ export class TaskAddEditComponent implements OnInit {
 	filteredTasks: ITask[];	
 	
 	paramId: number;
+	task: ITask;
 	
 	_projectsFilter: string;
 	get projectsFilter(): string {
@@ -91,7 +92,7 @@ export class TaskAddEditComponent implements OnInit {
 							},
                            error => this.errorMessage = <any>error);
 						   
-		const param = +this._route.snapshot.paramMap.get('id');
+		//const param = +this._route.snapshot.paramMap.get('id');
 		
 		this._route.params.subscribe(params => this.paramId = params['id']);
 		
@@ -111,12 +112,24 @@ export class TaskAddEditComponent implements OnInit {
 		//call appropriate method to set the button label, etc.
 		if(!(this.paramId == undefined || isNaN(this.paramId))) {
 			//Edit Task
-			console.log('param=' + param + ', this.paramId=' + this.paramId);
+			//console.log('param=' + param + ', this.paramId=' + this.paramId);
+			console.log('this.paramId=' + this.paramId);
 			this.saveButtonLabel = 'Update Task';
+			this.taskSvc.getTask(this.paramId)
+                .subscribe(task => {
+								this.task = task;	
+								
+							},
+                           error => this.errorMessage = <any>error);
+			//console.log('taskObj.name=' + this.task.name);
+			
+			this.disableControlsForEdit();
 		}
 		else {
 			//New Task
-			console.log('param=' + param + ', this.paramId=' + this.paramId);			
+			//console.log('param=' + param + ', this.paramId=' + this.paramId);
+			console.log('this.paramId=' + this.paramId);
+			
 		}
 	}
 	
@@ -165,6 +178,12 @@ export class TaskAddEditComponent implements OnInit {
 	selectProject(proj: any): void {
 		console.log(proj);
 		this.taskForm.patchValue({projectId: proj.id});
+	}
+	
+	disableControlsForEdit(): void {
+		this.taskForm.controls['isParent'].disable();
+		this.taskForm.controls['projectId'].disable();
+		
 	}
 
 }

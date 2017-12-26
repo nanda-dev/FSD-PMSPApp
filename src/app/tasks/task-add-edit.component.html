@@ -17,7 +17,7 @@
 						</div>	
 						<div class="col-md-3">					
 							<button class="btn btn-default float-right"
-									type="button" (click)='showModalPopUp(projModal)'>
+									type="button" (click)='showModalPopUp(projModal)' [disabled]="!taskForm.isParent">
 								Search
 							</button>					
 						</div>
@@ -40,7 +40,7 @@
 							<label>
 								<input id="isParentId"
 									   type="checkbox"
-									   formControlName = "isParent" >
+									   formControlName="isParent" >
 								Parent Task
 							</label>
 						</div>
