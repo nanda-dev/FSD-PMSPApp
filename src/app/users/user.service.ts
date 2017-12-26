@@ -12,13 +12,14 @@ import { IUser } from './user';
 
 @Injectable()
 export class UserService {
-    private baseUrl = 'api/users';
+    private baseUrl = 'http://localhost:8085/api/user';
 	private _userUrl = './api/users.json';
+	
 
     constructor(private http: Http) { }
 
     getUsers(): Observable<IUser[]> {
-        return this.http.get(this._userUrl)
+        return this.http.get(this.baseUrl)
             .map((response: Response) => <IUser[]>response.json())
             .do(data => console.log('getUsers: ' + JSON.stringify(data)))
             .catch(this.handleError);
