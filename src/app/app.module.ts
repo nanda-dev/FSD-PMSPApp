@@ -46,6 +46,8 @@ import { TaskService } from './tasks/task.service';
 		{path: 'users', component: UserDetailComponent},
 		{path: 'projects', component: ProjectDetailComponent},
 		{path: 'taskupdate', component: TaskAddEditComponent},
+		{path: 'taskupdate/:id', component: TaskAddEditComponent},
+		
 		{path: 'tasks', component: TaskDetailComponent},
 		{path: 'welcome', component: WelcomeComponent},
 		{path: '', redirectTo: 'welcome', pathMatch: 'full'},

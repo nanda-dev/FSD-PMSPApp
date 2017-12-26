@@ -1,5 +1,6 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
@@ -32,6 +33,8 @@ export class TaskAddEditComponent implements OnInit {
 	tasks: ITask[];
 	filteredTasks: ITask[];	
 	
+	paramId: number;
+	
 	_projectsFilter: string;
 	get projectsFilter(): string {
 		return this._projectsFilter;
@@ -63,20 +66,11 @@ export class TaskAddEditComponent implements OnInit {
 				private taskSvc: TaskService, 
 				private usrSvc: UserService, 
 				private projSvc: ProjectService, 
-				private modalService: BsModalService) { }
+				private modalService: BsModalService, 
+				private _route: ActivatedRoute) { }
 
 	ngOnInit() {
-		this.taskForm = this.fb.group({
-			taskName: '',
-			projectId: '',
-			isParent: false,
-			parentTaskId: '',
-			userId: '',
-			priority: '', 
-			startDate: '', 
-			endDate: '',
-			id: ''
-		});
+		
 		
 		this.projSvc.getProjects()
                 .subscribe(projects => {
@@ -96,9 +90,34 @@ export class TaskAddEditComponent implements OnInit {
 								this.filteredTasks = this.tasks;
 							},
                            error => this.errorMessage = <any>error);
+						   
+		const param = +this._route.snapshot.paramMap.get('id');
+		
+		this._route.params.subscribe(params => this.paramId = params['id']);
+		
+		this.taskForm = this.fb.group({
+			taskName: '',
+			projectId: '',
+			isParent: false,
+			parentTaskId: '',
+			userId: '',
+			priority: '', 
+			startDate: '', 
+			endDate: '',
+			id: ''
+		});
 		
 		//if pathParam indicates update screen is to be used,
 		//call appropriate method to set the button label, etc.
+		if(!(this.paramId == undefined || isNaN(this.paramId))) {
+			//Edit Task
+			console.log('param=' + param + ', this.paramId=' + this.paramId);
+			this.saveButtonLabel = 'Update Task';
+		}
+		else {
+			//New Task
+			console.log('param=' + param + ', this.paramId=' + this.paramId);			
+		}
 	}
 	
 	performFilterProjects(filterBy: string): IProject[] {

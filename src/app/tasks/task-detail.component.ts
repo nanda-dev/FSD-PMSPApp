@@ -1,4 +1,5 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 
@@ -22,7 +23,8 @@ export class TaskDetailComponent implements OnInit {
 	
 	constructor(private taskSvc: TaskService, 
 				private projSvc: ProjectService, 
-				private modalService: BsModalService) { }
+				private modalService: BsModalService, 
+				private _router: Router) { }
 
 	ngOnInit() {
 		this.taskSvc.getTasks()
@@ -37,6 +39,7 @@ export class TaskDetailComponent implements OnInit {
 	
 	editTask(taskId: number): void {
 		console.log('Edit Task: ' + taskId);
+		this._router.navigate(['/taskupdate/' + taskId]);
 	}
 	
 	endTask(taskId: number): void {
