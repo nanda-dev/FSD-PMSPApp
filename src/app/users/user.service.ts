@@ -36,7 +36,7 @@ export class UserService {
         const url = `${this.baseUrl}/${id}`;
         return this.http.get(this._userUrl)
             .map(this.extractData)
-            .do(data => console.log('getProduct: ' + JSON.stringify(data)))
+            .do(data => console.log('getUserById: ' + JSON.stringify(data)))
             .catch(this.handleError);
     }
 
@@ -46,22 +46,25 @@ export class UserService {
 
         const url = `${this.baseUrl}/${id}`;
         return this.http.delete(url, options)
-            .do(data => console.log('deleteProduct: ' + JSON.stringify(data)))
+            .do(data => console.log('deleteUser: ' + JSON.stringify(data)))
             .catch(this.handleError);
     }
 
-    saveUser(user: IUser): Observable<IUser> {
+    saveUser(user: IUser, isEdit: boolean): Observable<IUser> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        //if (user.id == undefined || user.id === 0) {
-            return this.createUser(user, options);
-        //}
-        //return this.updateUser(user, options);
+        if (!isEdit) {
+			return this.createUser(user, options);
+        }
+        else {
+			return this.updateUser(user, options);
+		}
     }
 
     private createUser(user: IUser, options: RequestOptions): Observable<IUser> {
-        return this.http.post(this.baseUrl, user, options)
+        user.id = undefined;
+		return this.http.post(this.baseUrl, user, options)
             .map(this.extractData)
             .do(data => console.log('createUser: ' + JSON.stringify(data)))
             .catch(this.handleError);

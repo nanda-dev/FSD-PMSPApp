@@ -12,19 +12,19 @@ import { IProject } from './project';
 
 @Injectable()
 export class ProjectService {
-    private baseUrl = 'api/projects';
+    private baseUrl = 'http://localhost:8085/api/project';
 	private _projectUrl = './api/projects.json';
 
     constructor(private http: Http) { }
 
     getProjects(): Observable<IProject[]> {
-        return this.http.get(this._projectUrl)
+        return this.http.get(this.baseUrl)
             .map((response: Response) => <IProject[]>response.json())
             .do(data => console.log('getProjects: ' + JSON.stringify(data)))
             .catch(this.handleError);
     }
 
-    getProject(id: number): Observable<IProject> {
+    /*getProject(id: number): Observable<IProject> {
         if (id === 0) {
         return Observable.of(this.initializeProject());
         // return Observable.create((observer: any) => {
@@ -37,9 +37,9 @@ export class ProjectService {
             .map(this.extractData)
             .do(data => console.log('getProduct: ' + JSON.stringify(data)))
             .catch(this.handleError);
-    }
+    }*/
 
-    deleteProject(id: number): Observable<Response> {
+    /*deleteProject(id: number): Observable<Response> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
@@ -47,16 +47,17 @@ export class ProjectService {
         return this.http.delete(url, options)
             .do(data => console.log('deleteProduct: ' + JSON.stringify(data)))
             .catch(this.handleError);
-    }
+    }*/
 
-    saveProject(project: IProject): Observable<IProject> {
+    saveProject(project: IProject, isEdit: boolean): Observable<IProject> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        if (project.id === 0) {
-            return this.createProject(project, options);
+        if (isEdit) {
+			return this.updateProject(project, options);            
         }
-        return this.updateProject(project, options);
+		return this.createProject(project, options);
+        
     }
 
     private createProject(project: IProject, options: RequestOptions): Observable<IProject> {
@@ -68,10 +69,24 @@ export class ProjectService {
     }
 
     private updateProject(project: IProject, options: RequestOptions): Observable<IProject> {
-        const url = `${this.baseUrl}/${project.id}`;
-        return this.http.put(url, project, options)
+        
+		return this.http.put(this.baseUrl, project, options)
             .map(() => project)
             .do(data => console.log('updateProject: ' + JSON.stringify(data)))
+            .catch(this.handleError);
+    }
+	
+	
+	
+	suspendProject(id: number): Observable<IProject> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+		const url = `${this.baseUrl}/${id}`;
+		let data = {};
+
+        return this.http.put(url, {}, options)
+            .map(() => data)
+            .do(data => console.log('suspendProj: ' + JSON.stringify(data)))
             .catch(this.handleError);
     }
 

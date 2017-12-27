@@ -82,7 +82,7 @@
                             <button class="btn btn-primary float-right"
                                     type="submit"
                                     [disabled]="!userForm.valid">
-                                {{ saveButtonLabel }}
+                                {{isEdit ? 'Update' : 'Add'}}
                             </button>
                         </span>
                         <span>

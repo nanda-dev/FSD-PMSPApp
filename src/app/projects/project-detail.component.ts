@@ -16,14 +16,21 @@ import { UserService } from '../users/user.service';
 })
 export class ProjectDetailComponent implements OnInit {
 	bsConfig: Partial<BsDatepickerConfig>;
+	
 	modalRef: BsModalRef;
+	
 	projectForm: FormGroup;
+	project: IProject;
+	
 	projects: IProject[];
 	filteredProjects: IProject[];
+	
 	errorMessage: string;
+	
 	saveButtonLabel: string = 'Add';
-	managerId: number;
 	isEdit: boolean = false;
+	
+	managerId: number;	
 	users: IUser[];
 	filteredUsers: IUser[];
 	
@@ -44,26 +51,27 @@ export class ProjectDetailComponent implements OnInit {
 		this._usersFilter = value;
 		this.filteredUsers = this.usersFilter ? this.performFilterUsers(this.usersFilter) : this.users;
 	}
+	
+	minDate: Date;
 
 	constructor(private projSvc: ProjectService, 
 				private fb: FormBuilder,
 				private modalService: BsModalService, 
-				private usrSvc: UserService) { }
+				private usrSvc: UserService) { 
+				
+	
+		this.minDate = new Date();
+		this.minDate.setDate(this.minDate.getDate() - 7);
+	}
 				
 	
 	
-	test() {
-			alert('test');
-	}
-
 	ngOnInit() {
+		//Set theme for date-picker
 		this.bsConfig = Object.assign({}, { containerClass: 'theme-dark-blue'});
-		this.projSvc.getProjects()
-                .subscribe(projects => {
-							this.projects = projects;
-							this.filteredProjects = this.projects;
-							},
-                           error => this.errorMessage = <any>error);
+		
+		this.refreshProjectList();
+		
 		this.usrSvc.getUsers()
                 .subscribe(users => {
 							this.users = users;
@@ -72,11 +80,11 @@ export class ProjectDetailComponent implements OnInit {
                            error => this.errorMessage = <any>error);
 		
 		this.projectForm = this.fb.group({
-			projectName: '',
-			managerId: '',
+			name: '',
+			managerId: {value: '', disabled: true},
 			priority: '', 
-			hasDate: false, 
-			date: [], 
+			setDates: false, 
+			dateRange: {value: [], disabled: true}, 
 			id: ''
 		});
 	}
@@ -97,37 +105,89 @@ export class ProjectDetailComponent implements OnInit {
 	editProject(project: IProject): void {
 		//console.log('edit project.id=' + project.id);
 		this.projectForm.patchValue({
-			projectName: project.name,
+			name: project.name,
 			managerId: project.managerId,
 			priority: project.priority, 
-			startDate: project.startDate, 
-			endDate: project.endDate,
+			dateRange: {value: [Date.parse(project.startDate), Date.parse(project.endDate)], disabled: project.startDate ? true : false},//need to check this initialization
+			setDates: project.startDate ? true : false,
 			id: project.id
 		});	
 		
+		//unable to enable/disable control in patchValue, hence this workaround is used.
+		if(project.startDate){
+			this.projectForm.controls['dateRange'].enable();
+		}
+		
 		this.saveButtonLabel = 'Update';
+		this.isEdit = true;
 	}
 	
-	suspendProject(projectId: number): void {
-		//console.log('suspend project: ' + projectId);
-	}
+	
 	
 	resetForm(): void {
 		this.projectForm.reset();
 		this.saveButtonLabel = 'Add';
+		this.isEdit = false;
+	}
+	
+	refreshProjectList(): void {
+		this.projSvc.getProjects()
+                .subscribe(projects => {
+							this.projects = projects;
+							this.filteredProjects = this.projects;
+							},
+                           error => this.errorMessage = <any>error);
 	}
 	
 	save(): void {
-		//console.log('Save Project:' + JSON.stringify(this.projectForm));//ToDo
+		console.log('date1=' + this.projectForm.controls['dateRange'].value[0].toISOString());
+		//let d = new Date();
+		//d.setDate(Date.parse(this.projectForm.controls['dateRange'].value[0].toISOString().replace('T',' ').replace('Z', '')));
+		//console.log('d=' + d);
+		
+		console.log('date2=' + this.projectForm.controls['dateRange'].value[1].toISOString());
+		console.log('setDates=' + this.projectForm.controls['setDates'].value);
+		
+		
+		let p = Object.assign({}, this.project, this.projectForm.value);
+		p.startDate = this.projectForm.controls['dateRange'].value[0].toISOString();
+		p.endDate = this.projectForm.controls['dateRange'].value[1].toISOString();
+		
+		//There seems to be some issues when assigning managerId value from form to IProject object,
+		//could because the field is disabled in template? Hence using this workaround for now.
+		
+		p.managerId = this.managerId;
+		
+		console.log('saveProject:' + JSON.stringify(p));
+		
+		this.projSvc.saveProject(p, this.isEdit)
+					.subscribe(proj => {
+							console.log('Proj saved:' + JSON.stringify(proj));
+							this.resetForm();
+							this.refreshProjectList();
+						},
+						error => this.errorMessage = <any>error);
 		
 	}
+	
+	suspendProject(projectId: number): void {
+		console.log('suspend project: ' + projectId);
+		this.projSvc.suspendProject(projectId)
+					.subscribe(proj => {
+							console.log('Proj suspendedd:' + JSON.stringify(proj));
+							this.resetForm();
+							this.refreshProjectList();
+						},
+						error => this.errorMessage = <any>error);
+	}
+	
 	check(): void {
-		//console.log(this.projectForm.controls['hasDate'].value);
-		if(this.projectForm.controls['hasDate'].value){
-			this.projectForm.controls['date'].disable();				
+		//console.log(this.projectForm.controls['setDates'].value);
+		if(!this.projectForm.controls['setDates'].value){
+			this.projectForm.controls['dateRange'].disable();				
 		}
 		else {
-			this.projectForm.controls['date'].enable();				
+			this.projectForm.controls['dateRange'].enable();				
 		}
 	}
 	
@@ -136,7 +196,8 @@ export class ProjectDetailComponent implements OnInit {
 	}
 	
 	selectUser(user: any): void {
-		console.log(user);
+		console.log('Selected Manager:' + JSON.stringify(user));
+		this.managerId = user.id;
 		this.projectForm.patchValue({managerId: user.id});
 	}
 

@@ -6,25 +6,25 @@
               [formGroup]="projectForm">
             <fieldset>
                 <div class="form-group"
-                    [ngClass]="{'has-error': (projectForm.get('projectName').touched || 
-                                              projectForm.get('projectName').dirty) &&
-                                              !projectForm.get('projectName').valid }">
+                    [ngClass]="{'has-error': (projectForm.get('name').touched || 
+                                              projectForm.get('name').dirty) &&
+                                              !projectForm.get('name').valid }">
                     <label class="col-xs-2 control-label" 
-                           for="projectNameId">Project Name</label>
+                           for="nameId">Project Name</label>
 
                     <div class="col-xs-8">
                         <input class="form-control" 
-                               id="projectNameId" 
+                               id="nameId" 
                                type="text" 
 							   placeholder="Project Name (required)" 
-                               formControlName="projectName" />
-                        <span class="help-block" *ngIf="(projectForm.get('projectName').touched || 
-                                                         projectForm.get('projectName').dirty) && 
-                                                         projectForm.get('projectName').errors">
-                            <span *ngIf="projectForm.get('projectName').errors.required">
+                               formControlName="name" />
+                        <span class="help-block" *ngIf="(projectForm.get('name').touched || 
+                                                         projectForm.get('name').dirty) && 
+                                                         projectForm.get('name').errors">
+                            <span *ngIf="projectForm.get('name').errors.required">
                                 Please enter project name.
                             </span>
-                            <span *ngIf="projectForm.get('projectName').errors.minlength">
+                            <span *ngIf="projectForm.get('name').errors.minlength">
                                 The project name must be longer than 3 characters.
                             </span>
                         </span>
@@ -33,9 +33,12 @@
                 <div class="form-group">
                     <div class="col-xs-8 col-xs-offset-2">
 						<label>
-						  <input type="checkbox" formControlName="hasDate" (change)="check()"> Set Start Date and End Date 
+						  <input type="checkbox" formControlName="setDates" (change)="check()"/> Set Start Date and End Date 
 						</label>
-						<input type="text" class="form-control" placeholder="Start Date - End Date" bsDaterangepicker formControlName="date" [bsConfig]="bsConfig" style="margin-left: 10px; width: auto; display: inline-block;"/> 
+						<input type="text" class="form-control" placeholder="Start Date - End Date" 
+								bsDaterangepicker formControlName="dateRange" [bsConfig]="bsConfig" 
+								[minDate]="minDate" 
+								style="margin-left: 10px; width: auto; display: inline-block;" /> 
 					</div>
                 </div>
 
@@ -61,7 +64,7 @@
                         <input class="form-control" 
                                id="managerId" 
                                type="text" 
-                               formControlName="managerId" />                        
+							   formControlName="managerId" />                        
                     </div>
 					<div class="col-xs-2 text-right">
 						<button class="btn btn-default" type="button" (click)="showManagerModal(mgrModal)">Search</button>
@@ -74,7 +77,7 @@
                             <button class="btn btn-primary float-right"
                                     type="submit"
                                     [disabled]="!projectForm.valid">
-                                {{ saveButtonLabel }}
+                                {{ isEdit ? 'Update' : 'Add' }}
                             </button>
                         </span>
                         <span>
@@ -169,6 +172,7 @@
 <br>Valid: {{ projectForm.valid }}
 <br>Value: {{ projectForm.value | json }}
 <br>Projects: {{ projects | json }}
+<br>Projects: {{ projectForm.get('managerId').value }}
 
 
 <ng-template #mgrModal>

@@ -16,6 +16,7 @@ export class UserDetailComponent implements OnInit {
   saveButtonLabel: string = 'Add';
   errorMessage: string;
   user: IUser;
+  isEdit: boolean = false;
   
   _listFilter: string;
   get listFilter(): string {
@@ -36,32 +37,23 @@ export class UserDetailComponent implements OnInit {
 	  id: ''		  
 	});
 	
-    this.usrSvc.getUsers()
-                .subscribe(users => {
-							this.users = users;
-							this.filteredUsers = this.users;
-							},
-                           error => this.errorMessage = <any>error);
+    this.refreshUserList();
   }
   
   save(): void {
-	  console.log('Save UserForm...');
+	  console.log('Save UserForm...isEdit?' + this.isEdit);
 	  //console.log('userForm = ' + JSON.stringify(this.userForm));
-	  let t = [this.user];
-	  
 	  let u = Object.assign({}, this.user, this.userForm.value);
 	  console.log('user = ' + u.id + ',' + u.firstName + ',' + u.lastName);
-	  this.usrSvc.saveUser(u).subscribe(user => {
-													console.log('User Saved:' + user);
-													this.usrSvc.getUsers()
-																.subscribe(users => {
-																			this.users = users;
-																			this.filteredUsers = this.users;
-																			},
-																		   error => this.errorMessage = <any>error);
-													
-												},
-										error => this.errorMessage = <any>error);
+	  
+	  this.usrSvc.saveUser(u, this.isEdit)
+				.subscribe(user => {
+					console.log('User Saved:' + user);
+					this.resetForm();
+					this.refreshUserList();																	
+				},
+				error => this.errorMessage = <any>error);
+	  
   }
   
   editUser(user: IUser): void {
@@ -72,7 +64,7 @@ export class UserDetailComponent implements OnInit {
 		id: user.id
 	});
 	
-	this.saveButtonLabel = 'Update';
+	this.isEdit = true;
 	
   }
   
@@ -80,7 +72,8 @@ export class UserDetailComponent implements OnInit {
 	  console.log('Delete user id: ' + id);
 	  this.usrSvc.deleteUser(id)
 				.subscribe(user => {
-							console.log('User deleted:' + (user ? user ['id'] : 'undefined'));
+								console.log('User deleted:' + (user ? user ['id'] : 'undefined'));
+								this.refreshUserList();
 							},
 						   error => this.errorMessage = <any>error);
   }
@@ -88,12 +81,22 @@ export class UserDetailComponent implements OnInit {
   performFilter(filterBy: string): IUser[] {
         filterBy = filterBy.toLocaleLowerCase();
         return this.users.filter((user: IUser) =>
-              (user.firstName.toLocaleLowerCase().indexOf(filterBy) !== -1) || (user.lastName.toLocaleLowerCase().indexOf(filterBy) !== -1));
+              (user.firstName.toLocaleLowerCase().indexOf(filterBy) !== -1) 
+				|| (user.lastName.toLocaleLowerCase().indexOf(filterBy) !== -1));
   }
   
   resetForm(): void {
 		this.userForm.reset();
-		this.saveButtonLabel = 'Add';
+		this.isEdit = false;		
+  }
+  
+  refreshUserList(): void {
+		this.usrSvc.getUsers()
+			.subscribe(users => {
+						this.users = users;
+						this.filteredUsers = this.users;
+					},
+					error => this.errorMessage = <any>error);
   }
   
 
