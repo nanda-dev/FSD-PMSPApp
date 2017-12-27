@@ -54,14 +54,13 @@ export class UserService {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        if (user.id === 0) {
+        //if (user.id == undefined || user.id === 0) {
             return this.createUser(user, options);
-        }
-        return this.updateUser(user, options);
+        //}
+        //return this.updateUser(user, options);
     }
 
     private createUser(user: IUser, options: RequestOptions): Observable<IUser> {
-        user.id = undefined;
         return this.http.post(this.baseUrl, user, options)
             .map(this.extractData)
             .do(data => console.log('createUser: ' + JSON.stringify(data)))
@@ -70,7 +69,7 @@ export class UserService {
 
     private updateUser(user: IUser, options: RequestOptions): Observable<IUser> {
         const url = `${this.baseUrl}/${user.id}`;
-        return this.http.put(url, user, options)
+        return this.http.put(this.baseUrl, user, options)
             .map(() => user)
             .do(data => console.log('updateUser: ' + JSON.stringify(data)))
             .catch(this.handleError);

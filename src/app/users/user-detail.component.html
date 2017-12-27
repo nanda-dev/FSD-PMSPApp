@@ -55,21 +55,21 @@
                 </div>
 
                 <div class="form-group"
-                    [ngClass]="{'has-error': (userForm.get('empId').touched || userForm.get('empId').dirty) && !userForm.get('empId').valid }">
+                    [ngClass]="{'has-error': (userForm.get('id').touched || userForm.get('id').dirty) && !userForm.get('id').valid }">
                     <label class="col-md-2 control-label" 
-                        for="empId">Employee ID</label>
+                        for="id">Employee ID</label>
 
                     <div class="col-md-3">
                         <input class="form-control" 
-                               id="empId" 
+                               id="id" 
                                type="text" 
                                placeholder="Employee ID (required)" 
-                               formControlName="empId" />
-                        <span class="help-block" *ngIf="(userForm.get('empId').touched || userForm.get('empId').dirty) && userForm.get('empId').errors">
-                            <span *ngIf="userForm.get('empId').errors.required">
+                               formControlName="id" />
+                        <span class="help-block" *ngIf="(userForm.get('id').touched || userForm.get('id').dirty) && userForm.get('id').errors">
+                            <span *ngIf="userForm.get('id').errors.required">
                                 Please enter the employee Id.
                             </span>
-                             <span *ngIf="userForm.controls.empId.errors.maxlength">
+                             <span *ngIf="userForm.controls.id.errors.maxlength">
                                 The last name must be less than 10 characters.
                             </span>
                        </span>

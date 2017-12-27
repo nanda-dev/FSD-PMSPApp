@@ -15,6 +15,7 @@ export class UserDetailComponent implements OnInit {
   filteredUsers: IUser[];
   saveButtonLabel: string = 'Add';
   errorMessage: string;
+  user: IUser;
   
   _listFilter: string;
   get listFilter(): string {
@@ -32,7 +33,7 @@ export class UserDetailComponent implements OnInit {
 	this.userForm = this.fb.group({
 	  firstName: '',
 	  lastName: '',
-	  empId: ''		  
+	  id: ''		  
 	});
 	
     this.usrSvc.getUsers()
@@ -45,7 +46,22 @@ export class UserDetailComponent implements OnInit {
   
   save(): void {
 	  console.log('Save UserForm...');
-	  console.log('userForm = ' + JSON.stringify(this.userForm));
+	  //console.log('userForm = ' + JSON.stringify(this.userForm));
+	  let t = [this.user];
+	  
+	  let u = Object.assign({}, this.user, this.userForm.value);
+	  console.log('user = ' + u.id + ',' + u.firstName + ',' + u.lastName);
+	  this.usrSvc.saveUser(u).subscribe(user => {
+													console.log('User Saved:' + user);
+													this.usrSvc.getUsers()
+																.subscribe(users => {
+																			this.users = users;
+																			this.filteredUsers = this.users;
+																			},
+																		   error => this.errorMessage = <any>error);
+													
+												},
+										error => this.errorMessage = <any>error);
   }
   
   editUser(user: IUser): void {
@@ -53,7 +69,7 @@ export class UserDetailComponent implements OnInit {
 	this.userForm.patchValue({
 		firstName: user.firstName,
 		lastName: user.lastName,
-		empId: user.id
+		id: user.id
 	});
 	
 	this.saveButtonLabel = 'Update';
