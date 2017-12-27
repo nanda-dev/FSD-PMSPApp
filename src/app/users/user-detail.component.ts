@@ -76,6 +76,15 @@ export class UserDetailComponent implements OnInit {
 	
   }
   
+  deleteUser(id: number) {
+	  console.log('Delete user id: ' + id);
+	  this.usrSvc.deleteUser(id)
+				.subscribe(user => {
+							console.log('User deleted:' + (user ? user ['id'] : 'undefined'));
+							},
+						   error => this.errorMessage = <any>error);
+  }
+  
   performFilter(filterBy: string): IUser[] {
         filterBy = filterBy.toLocaleLowerCase();
         return this.users.filter((user: IUser) =>
