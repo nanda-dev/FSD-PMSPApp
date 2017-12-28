@@ -140,7 +140,8 @@
 												Update
 											</button><br/>
 										
-											<button class="btn btn-default" type="button" (click)='suspendProject(project.id)'>
+											<button class="btn btn-default" type="button" 
+											(click)='suspendProject(project.id)' [disabled]="project.status == 'S'">
 												Suspend
 											</button>
 										</td>

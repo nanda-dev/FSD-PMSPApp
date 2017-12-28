@@ -13,13 +13,21 @@ import { ITask } from './task';
 
 @Injectable()
 export class TaskService {
-    private baseUrl = 'api/tasks';
+    private baseUrl = 'http://localhost:8085/api/task';
 	private _taskUrl = './api/tasks.json';
 
     constructor(private http: Http) { }
 
     getTasks(): Observable<ITask[]> {
         return this.http.get(this._taskUrl)
+            .map((response: Response) => <ITask[]>response.json())
+            .do(data => console.log('getTasks: ' + JSON.stringify(data)))
+            .catch(this.handleError);
+    }
+	
+	getTasksByProject(projectId: number): Observable<ITask[]> {
+		const url = `${this.baseUrl}/project/${projectId}`;
+        return this.http.get(url)
             .map((response: Response) => <ITask[]>response.json())
             .do(data => console.log('getTasks: ' + JSON.stringify(data)))
             .catch(this.handleError);
@@ -51,11 +59,11 @@ export class TaskService {
             .catch(this.handleError);
     }
 
-    saveTask(task: ITask): Observable<ITask> {
+    saveTask(task: ITask, isEdit: boolean): Observable<ITask> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        if (task.id === 0) {
+        if (!isEdit) {
             return this.createTask(task, options);
         }
         return this.updateTask(task, options);
