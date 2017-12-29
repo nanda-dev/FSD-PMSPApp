@@ -38,7 +38,7 @@
 						</label>
 						<input type="text" class="form-control" placeholder="Start Date - End Date" 
 								bsDaterangepicker formControlName="dateRange" [bsConfig]="bsConfig" 
-								[minDate]="minDate" 
+								[minDate]="minDate" [bsValue]="dateRangeInit" 
 								style="margin-left: 10px; width: auto; display: inline-block;" /> 
 					</div>
                 </div>
@@ -162,9 +162,9 @@
 									</tr>
 									<tr>
 										<td>Start Date</td>
-										<td>{{ project.startDate }}</td>
+										<td>{{ project.startDate | date: 'MM/dd/yyyy' }}</td>
 										<td>End Date</td>
-										<td>{{ project.endDate }}</td>																					
+										<td>{{ project.endDate  | date: 'MM/dd/yyyy'}}</td>																					
 									</tr>	
 									
 									

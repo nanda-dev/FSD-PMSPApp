@@ -63,8 +63,8 @@
 						<td>{{task.name}}</td>
 						<td>{{task.parentTaskId}}</td>
 						<td>{{task.priority}}</td>
-						<td>{{task.startDate|date:'MM/dd/yyyy'}}</td>
-						<td>{{task.endDate|date:'MM/dd/yyyy'}}</td>
+						<td>{{task.startDate | date:'MM/dd/yyyy'}}</td>
+						<td>{{task.endDate | date:'MM/dd/yyyy'}}</td>
 						<td>
 							<button class="btn btn-default" type="button" (click)='editTask(task.id)'>
 								Edit

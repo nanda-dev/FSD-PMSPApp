@@ -58,6 +58,9 @@ export class ProjectDetailComponent implements OnInit {
 	}
 	
 	minDate: Date;
+	startDateInitial: Date;
+	endDateInitial: Date;
+	dateRangeInit: Date[];
 
 	constructor(private projSvc: ProjectService, 
 				private fb: FormBuilder,
@@ -122,6 +125,10 @@ export class ProjectDetailComponent implements OnInit {
 		if(project.startDate){
 			this.projectForm.controls['dateRange'].enable();
 		}
+		
+		this.startDateInitial = new Date(project.startDate);
+		this.endDateInitial = new Date(project.endDate);
+		this.dateRangeInit = [this.startDateInitial, this.endDateInitial];
 		
 		this.saveButtonLabel = 'Update';
 		this.isEdit = true;
