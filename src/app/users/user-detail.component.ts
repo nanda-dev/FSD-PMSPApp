@@ -16,6 +16,8 @@ export class UserDetailComponent implements OnInit {
   saveButtonLabel: string = 'Add';
   errorMessage: string;
   user: IUser;
+  order: string;
+  reverse: boolean = false;
   isEdit: boolean = false;
   
   _listFilter: string;
@@ -39,6 +41,13 @@ export class UserDetailComponent implements OnInit {
 	
     this.refreshUserList();
   }
+  
+	sort(key): void {
+		if(this.order==key){
+			this.reverse=!this.reverse
+		}
+		this.order=key;
+	}
   
   save(): void {
 	  console.log('Save UserForm...isEdit?' + this.isEdit);
