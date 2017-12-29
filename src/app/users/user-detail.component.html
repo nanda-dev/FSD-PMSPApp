@@ -97,8 +97,8 @@
         </form>
 		<hr/>
 		
-        <div class='row'>
-            <div class='col-sm-4 col-sm-offset-1'>
+        <div class='row' align=center>
+            <div class='col-sm-4 col-sm-offset-1' align=left>
                 <input type='text' class="form-control" placeholder='Search...' [(ngModel)]='listFilter'/>
             </div>
 			<div class="col-sm-4 col-sm-offset-2">
@@ -124,17 +124,17 @@
         </div>
 		<hr class='style6'/>
 		<div class='table-responsive'>
-            <table class='table  table-borderless table-striped' *ngIf='users && users.length'>
+            <table class='table' *ngIf='users && users.length'>
 				<tbody>
 					<tr *ngFor='let user of filteredUsers | orderBy: order: reverse'>
 						<td>
-							<table class='table table-hover table-borderless'>
+							<table class='table'>
 								<tbody>
 									<tr>
-										<td>
-											{{ user.firstName }} {{ user.lastName }}											
+										<td align=left>
+											<input type='text' class="form-control col-sm-8" disabled [value]='user.firstName'/>											
 										</td>
-										<td class="col-sm-4">											
+										<td>											
 											<button class="btn btn-default" type="button" (click)='editUser(user)'>
 												Edit
 											</button>																	
@@ -142,14 +142,20 @@
 									</tr>
 									<tr>
 										<td>											
-											{{ user.id }}											
+											<input type='text' class="form-control col-sm-8" disabled [value]='user.lastName'/>											
 										</td>
 										<td>											
 											<button class="btn btn-default" type="button" (click)='deleteUser(user.id)'>
 												Delete
 											</button>											
 										</td>
-									</tr>									
+									</tr>
+									<tr>
+										<td>										
+											<input type='text' class="form-control col-sm-6" disabled [value]='user.id'/>											
+										</td>
+										<td></td>
+									</tr>
 								</tbody>
 							</table>
 						</td>					
