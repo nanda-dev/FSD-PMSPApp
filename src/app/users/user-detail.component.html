@@ -106,56 +106,53 @@
 					Sort:					
 				</span>
 				<span>
-					<button class="btn btn-default" [ngClass]="{'btn-warning': this.order=='firstName'}" type="button" (click)="sort('firstName')">
+					<button class="btn btn-default" [ngClass]="{'btn-warning': this.orderByKey =='firstName'}" 
+							type="button" (click)="sort('firstName')">
 						First Name
 					</button>
 				</span>
 				<span>
-					<button class="btn btn-default" [ngClass]="{'btn-warning': this.order=='lastName'}" type="button" (click)="sort('lastName')">
+					<button class="btn btn-default" [ngClass]="{'btn-warning': this.orderByKey =='lastName'}" 
+							type="button" (click)="sort('lastName')">
 						Last Name
 					</button>
 				</span>
 				<span>
-					<button class="btn btn-default" [ngClass]="{'btn-warning': this.order=='id'}" type="button" (click)="sort('id')">
+					<button class="btn btn-default" [ngClass]="{'btn-warning': this.orderByKey =='id'}" 
+							type="button" (click)="sort('id')">
 						Id
 					</button>
 				</span>
             </div>
         </div>
-		<hr class='style6'/>
+		<hr class='dotted-hr'/>
 		<div class='table-responsive'>
-            <table class='table' *ngIf='users && users.length'>
+            <table class='table table-borderless table-striped' *ngIf='users && users.length'>
 				<tbody>
-					<tr *ngFor='let user of filteredUsers | orderBy: order: reverse'>
+					<tr *ngFor='let user of filteredUsers | orderBy: orderByKey: sortReverse'>
 						<td>
-							<table class='table'>
+							<table class='table table-borderless table-condensed'>
 								<tbody>
 									<tr>
-										<td align=left>
-											<input type='text' class="form-control col-sm-8" disabled [value]='user.firstName'/>											
+										<td>
+											{{user.firstName}} {{user.lastName}}											
 										</td>
-										<td>											
+										<td class="col-sm-4">											
 											<button class="btn btn-default" type="button" (click)='editUser(user)'>
 												Edit
 											</button>																	
 										</td>
 									</tr>
 									<tr>
-										<td>											
-											<input type='text' class="form-control col-sm-8" disabled [value]='user.lastName'/>											
+										<td>
+											{{user.id}}
 										</td>
 										<td>											
 											<button class="btn btn-default" type="button" (click)='deleteUser(user.id)'>
 												Delete
 											</button>											
 										</td>
-									</tr>
-									<tr>
-										<td>										
-											<input type='text' class="form-control col-sm-6" disabled [value]='user.id'/>											
-										</td>
-										<td></td>
-									</tr>
+									</tr>									
 								</tbody>
 							</table>
 						</td>					

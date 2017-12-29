@@ -22,6 +22,9 @@ export class TaskDetailComponent implements OnInit {
 	projectId: string;
 	selectedProj: IProject;
 	
+	orderByKey: string;
+	sortReverse: boolean = false;
+	
 	constructor(private taskSvc: TaskService, 
 				private projSvc: ProjectService, 
 				private modalService: BsModalService, 
@@ -79,6 +82,13 @@ export class TaskDetailComponent implements OnInit {
 										console.log('tasksByProj=' + JSON.stringify(this.tasks));
 									},
                            error => this.errorMessage = <any>error);
+	}
+	
+	sort(key): void {
+		if(this.orderByKey == key){
+			this.sortReverse = !this.sortReverse
+		}
+		this.orderByKey = key;
 	}
 
 }

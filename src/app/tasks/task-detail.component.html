@@ -21,22 +21,26 @@
 					Sort Task By:					
 				</span>
 				<span>
-					<button class="btn btn-default" type="button">
+					<button class="btn btn-default" type="button" 
+					 (click)="sort('startDate')">
 						Start Date
 					</button>
 				</span>
 				<span>
-					<button class="btn btn-default" type="button">
+					<button class="btn btn-default" type="button" 
+					 (click)="sort('endDate')">
 						End Date
 					</button>
 				</span>
 				<span>
-					<button class="btn btn-default" type="button">
+					<button class="btn btn-default" type="button" 
+					 (click)="sort('priority')">
 						Priority
 					</button>
 				</span>
 				<span>
-					<button class="btn btn-default" type="button">
+					<button class="btn btn-default" type="button" 
+					 (click)="sort('status')">
 						Completed
 					</button>
 				</span>
@@ -55,7 +59,7 @@
 						<th></th>
 						<th></th>
 					</tr>
-					<tr *ngFor='let task of tasks'>
+					<tr *ngFor='let task of tasks | orderBy: orderByKey : sortReverse'>
 						<td>{{task.name}}</td>
 						<td>{{task.parentTaskId}}</td>
 						<td>{{task.priority}}</td>
