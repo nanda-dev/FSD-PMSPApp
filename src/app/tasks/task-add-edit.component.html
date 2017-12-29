@@ -86,12 +86,14 @@
 						<label class="col-md-2 col-md-offset-0 control-label" 
 								   for="startDateId">Start Date</label>
 						<div class="col-md-2 col-md-offset-0">
-							<input type="text" class="form-control" placeholder="Datepicker" bsDatepicker formControlName="startDate" (bsValueChange)='changeStartDate()'/>
+							<input type="text" class="form-control" placeholder="Start Date" bsDatepicker formControlName="startDate" 
+							(bsValueChange)='changeStartDate($event)' [bsValue]="startDateInitial"/>
 						</div>	
 						<label class="col-md-2 col-md-offset-0 control-label" 
 								   for="endDateId">End Date</label>
 						<div class="col-md-2 col-md-offset-0">
-							<input type="text" class="form-control" placeholder="Datepicker" bsDatepicker formControlName="endDate"/>
+							<input type="text" class="form-control" placeholder="End Date" bsDatepicker formControlName="endDate" 
+							(bsValueChange)='changeEndDate($event)' [bsValue]="endDateInitial" [minDate]="taskForm.get('startDate').value"/>
 						</div>
 					</div>
 					

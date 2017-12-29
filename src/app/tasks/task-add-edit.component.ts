@@ -19,6 +19,8 @@ import { UserService } from '../users/user.service';
 })
 export class TaskAddEditComponent implements OnInit {
 	taskForm: FormGroup;
+	startDateInitial: any;
+	endDateInitial: any;
 		
 	errorMessage: string;
 	saveButtonLabel: string = 'Add Task';
@@ -112,7 +114,7 @@ export class TaskAddEditComponent implements OnInit {
 			userId: undefined,
 			priority: undefined, 
 			startDate: null, 
-			endDate: {value: null, disabled: false},
+			endDate: null,
 			id: undefined
 		});
 		
@@ -121,12 +123,14 @@ export class TaskAddEditComponent implements OnInit {
 		if(!(this.paramId == undefined || isNaN(this.paramId))) {
 			//Edit Task
 			//console.log('param=' + param + ', this.paramId=' + this.paramId);
-			console.log('this.paramId=' + this.paramId);
+			console.log('(Edit Task) this.paramId=' + this.paramId);
 			this.isEdit = true;
 			this.saveButtonLabel = 'Update Task';
 			this.taskSvc.getTask(this.paramId)
                 .subscribe(task => {
-								this.task = task;								
+								this.task = task;
+								this.startDateInitial = new Date(task.startDate);
+								this.endDateInitial = new Date(task.endDate);
 							},
                            error => this.errorMessage = <any>error);
 			//console.log('taskObj.name=' + this.task.name);
@@ -136,7 +140,7 @@ export class TaskAddEditComponent implements OnInit {
 		else {
 			//New Task
 			//console.log('param=' + param + ', this.paramId=' + this.paramId);
-			console.log('this.paramId=' + this.paramId);
+			console.log('(New Task) this.paramId=' + this.paramId);
 			this.isEdit = false;
 			
 		}
@@ -235,9 +239,17 @@ export class TaskAddEditComponent implements OnInit {
 		this.modalRef.hide();
 	}
 	
-	changeStartDate(): void {
-		//bsDatePicker - bsValueChange event is triggered before actual val is changed!
-		console.log('Start date changed:' + this.taskForm.controls['startDate'].value);
+	changeStartDate(startDate: any): void {
+		const endDateCtrl = this.taskForm.controls['endDate'];
+		let endDateVal = endDateCtrl.value;
+		if (!!startDate) {
+			if(!!endDateVal){
+				endDateVal = (startDate.getTime() > endDateVal.getTime()) ? null : endDateVal;
+			}
+			endDateCtrl.reset({ value: endDateVal, disabled: false });
+		} else {
+			endDateCtrl.reset({ value: null, disabled: true });
+		}
 		
 		/*this.hasStartDate = this.taskForm.controls['startDate'].value ? true : false;
 		if(this.hasStartDate){
@@ -247,6 +259,9 @@ export class TaskAddEditComponent implements OnInit {
 			this.taskForm.controls['endDate'].disable();
 		}*/
 			
+	}
+	
+	changeEndDate(endDate: any): void {
 	}
 
 }
