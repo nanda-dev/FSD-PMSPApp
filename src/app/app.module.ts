@@ -8,6 +8,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
+import { OrderModule } from 'ngx-order-pipe';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
@@ -40,6 +41,7 @@ import { TaskService } from './tasks/task.service';
 	ReactiveFormsModule, 
 	HttpClientModule, 
 	HttpModule, 
+	OrderModule,
 	BsDatepickerModule.forRoot(), 
 	ModalModule.forRoot(), 
 	RouterModule.forRoot([

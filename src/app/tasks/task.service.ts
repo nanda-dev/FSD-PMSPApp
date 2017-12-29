@@ -34,8 +34,8 @@ export class TaskService {
     }
 
     getTask(id: number): Observable<ITask> {
-		console.log('GETTASK');
-        if (id === 0) {
+		console.log('GETTASK:' + id);
+        if (id === undefined || id === 0) {
 			return Observable.of(this.initializeTask());
         // return Observable.create((observer: any) => {
         //     observer.next(this.initializeProduct());
@@ -43,8 +43,10 @@ export class TaskService {
         // });
         };
         const url = `${this.baseUrl}/${id}`;
-        return this.getTasks()
-				.map(tasks => tasks.find(task => task.id === id));
+        return this.http.get(url)
+            .map((response: Response) => <ITask>response.json())
+            .do(data => console.log('getTaskById: ' + JSON.stringify(data)))
+            .catch(this.handleError);
     }
 	
 	
