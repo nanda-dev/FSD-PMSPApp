@@ -85,7 +85,7 @@ export class ProjectService {
 		let data = {};
 
         return this.http.put(url, {}, options)
-            .map(() => data)
+            .map(() => data) 
             .do(data => console.log('suspendProj: ' + JSON.stringify(data)))
             .catch(this.handleError);
     }
