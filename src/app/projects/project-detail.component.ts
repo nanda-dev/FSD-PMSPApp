@@ -1,5 +1,5 @@
 import { Component, OnInit, TemplateRef  } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
@@ -8,6 +8,7 @@ import { IProject } from './project';
 import { IUser } from '../users/user';
 import { ProjectService } from './project.service';
 import { UserService } from '../users/user.service';
+
 
 @Component({
   selector: 'pm-project-detail',
@@ -87,8 +88,8 @@ export class ProjectDetailComponent implements OnInit {
                            error => this.errorMessage = <any>error);
 		
 		this.projectForm = this.fb.group({
-			name: '',
-			managerId: {value: '', disabled: true},
+			name: ['', [Validators.required, Validators.minLength(3)]],
+			managerId: ['', Validators.required],
 			priority: '', 
 			setDates: false, 
 			dateRange: {value: [], disabled: true}, 
@@ -116,7 +117,7 @@ export class ProjectDetailComponent implements OnInit {
 			name: project.name,
 			managerId: project.managerId,
 			priority: project.priority, 
-			dateRange: {value: [Date.parse(project.startDate), Date.parse(project.endDate)], disabled: project.startDate ? true : false},//need to check this initialization
+			dateRange: [],//need to check this initialization
 			setDates: project.startDate ? true : false,
 			id: project.id
 		});	
@@ -194,10 +195,12 @@ export class ProjectDetailComponent implements OnInit {
 	toggleSetDates(): void {
 		//console.log(this.projectForm.controls['setDates'].value);
 		if(!this.projectForm.controls['setDates'].value){
-			this.projectForm.controls['dateRange'].disable();				
+			this.projectForm.controls['dateRange'].disable();
+			this.clearStartAndEndDate();
 		}
 		else {
-			this.projectForm.controls['dateRange'].enable();				
+			this.projectForm.controls['dateRange'].enable();
+			this.initStartAndEndDate();						
 		}
 	}
 	
@@ -224,6 +227,21 @@ export class ProjectDetailComponent implements OnInit {
 			this.sortReverse = !this.sortReverse
 		}
 		this.orderByKey = key;
+	}
+	
+	initStartAndEndDate(): void {
+		let today = new Date();
+		let nextDay = new Date();
+		nextDay.setDate(today.getDate() + 1);
+		
+		this.projectForm.patchValue({
+			dateRange: [today, nextDay]
+		});
+	}
+	clearStartAndEndDate(): void {
+		this.projectForm.patchValue({
+			dateRange: []
+		});
 	}
 
 }
