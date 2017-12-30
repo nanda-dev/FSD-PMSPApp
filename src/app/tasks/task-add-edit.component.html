@@ -17,7 +17,8 @@
 						</div>	
 						<div class="col-md-3">					
 							<button class="btn btn-default float-right"
-									type="button" (click)='showModalPopUp(projModal)' [disabled]="!taskForm.isParent">
+									type="button" (click)='showModalPopUp(projModal)' 
+									[disabled]="isEdit && !taskForm.isParent">
 								Search
 							</button>					
 						</div>
@@ -25,13 +26,13 @@
 					
 					<div class='form-group row'>
 						<label class="col-md-2 col-md-offset-0 control-label" 
-								   for="taskNameId">Task</label>
+								   for="nameId">Task</label>
 						<div class="col-md-6 col-md-offset-0">
 							<input class="form-control" 
-								   id="taskNameId" 
+								   id="nameId" 
 								   type="text" 
 								   placeholder="Task Name" 
-								   formControlName="taskName" />
+								   formControlName="name" />
 						</div>				
 					</div>
 					
@@ -58,7 +59,8 @@
 							   min="0"
 							   max="30"
 							   step="1"
-							   formControlName="priority" />  <span style='display: inline'>{{taskForm.get('priority').value}}</span>
+							   formControlName="priority" />  
+							<span style='display: inline'>{{taskForm.get('priority').value}}</span>
 						</div>				
 					</div>
 					
@@ -84,12 +86,14 @@
 						<label class="col-md-2 col-md-offset-0 control-label" 
 								   for="startDateId">Start Date</label>
 						<div class="col-md-2 col-md-offset-0">
-							<input type="text" class="form-control" placeholder="Datepicker" bsDatepicker formControlName="startDate" />
+							<input type="text" class="form-control" placeholder="Start Date" bsDatepicker formControlName="startDate" 
+							(bsValueChange)='changeStartDate($event)' [bsValue]="startDateInitial"/>
 						</div>	
 						<label class="col-md-2 col-md-offset-0 control-label" 
 								   for="endDateId">End Date</label>
 						<div class="col-md-2 col-md-offset-0">
-							<input type="text" class="form-control" placeholder="Datepicker" bsDatepicker formControlName="endDate" />
+							<input type="text" class="form-control" placeholder="End Date" bsDatepicker formControlName="endDate" 
+							(bsValueChange)='changeEndDate($event)' [bsValue]="endDateInitial" [minDate]="taskForm.get('startDate').value"/>
 						</div>
 					</div>
 					
@@ -132,6 +136,7 @@
 		</form>
 	</div>
 </div>
+<div>{{this.taskForm.controls['startDate'].value}}</div>
 
 <ng-template #usrModal>
   <div class="modal-header">
@@ -153,7 +158,7 @@
 							<th>Name</th>							
 						</tr>
 						<tr *ngFor='let user of filteredUsers'>
-							<td><input name="user" type="radio" [value]="user"  [(ngModel)]="selectedUser" (change)='selectUser(selectedUser)' /></td>
+							<td><input name="user" type="radio" [value]="user"  [(ngModel)]="selectedUser" (change)='selectUser()' /></td>
 							<td>{{user.id}}</td>
 							<td>{{user.firstName}} {{user.lastName}}</td>						
 						</tr>
@@ -162,7 +167,7 @@
 			</div>
 	</div>
 	<div class="modal-footer text-right">
-		<button class="btn btn-primary" type="button" (click)='modalRef.hide()'>OK</button>
+		<button class="btn btn-primary" type="button" (click)='closeUserPopUp()' [disabled]='!selectedUser'>OK</button>
 	</div>
 </ng-template>
 <ng-template #taskModal>
@@ -185,7 +190,7 @@
 							<th>Name</th>							
 						</tr>
 						<tr *ngFor='let task of filteredTasks'>
-							<td><input name="task" type="radio" [value]="task"  [(ngModel)]="selectedTask" (change)='selectTask(selectedTask)' /></td>
+							<td><input name="task" type="radio" [value]="task"  [(ngModel)]="selectedTask" (change)='selectTask()' /></td>
 							<td>{{task.id}}</td>
 							<td>{{task.name}}</td>						
 						</tr>
@@ -194,7 +199,7 @@
 			</div>
 	</div>
 	<div class="modal-footer text-right">
-		<button class="btn btn-primary" type="button" (click)='modalRef.hide()'>OK</button>
+		<button class="btn btn-primary" type="button" (click)='closeTaskPopUp()' [disabled]='!selectedTask'>OK</button>
 	</div>
 </ng-template>
 <ng-template #projModal>
@@ -217,7 +222,7 @@
 							<th>Name</th>							
 						</tr>
 						<tr *ngFor='let project of filteredProjects'>
-							<td><input name="project" type="radio" [value]="project"  [(ngModel)]="selectedProj" (change)='selectProj(selectedProject)' /></td>
+							<td><input name="project" type="radio" [value]="project"  [(ngModel)]="selectedProj" (change)='selectProject()' /></td>
 							<td>{{project.id}}</td>
 							<td>{{project.name}}</td>						
 						</tr>
@@ -226,6 +231,6 @@
 			</div>
 	</div>
 	<div class="modal-footer text-right">
-		<button class="btn btn-primary" type="button" (click)='modalRef.hide()'>OK</button>
+		<button class="btn btn-primary" type="button" (click)='closeProjectPopUp()' [disabled]='!selectedProj'>OK</button>
 	</div>
 </ng-template>

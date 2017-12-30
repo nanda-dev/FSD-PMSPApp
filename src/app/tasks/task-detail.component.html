@@ -1,7 +1,7 @@
 <div class="panel panel-primary">
     <div class="panel-body">
 		<div class='row'>            
-			<label class="col-md-1 col-md-offset-0 control-label" 
+			<label class="col-md-1 control-label" 
 							   for="projectId">Project</label>
 			<div class="col-md-4">
 				<input class="form-control" 
@@ -21,22 +21,26 @@
 					Sort Task By:					
 				</span>
 				<span>
-					<button class="btn btn-default" type="button">
+					<button class="btn btn-default" type="button" 
+					 (click)="sort('startDate')">
 						Start Date
 					</button>
 				</span>
 				<span>
-					<button class="btn btn-default" type="button">
+					<button class="btn btn-default" type="button" 
+					 (click)="sort('endDate')">
 						End Date
 					</button>
 				</span>
 				<span>
-					<button class="btn btn-default" type="button">
+					<button class="btn btn-default" type="button" 
+					 (click)="sort('priority')">
 						Priority
 					</button>
 				</span>
 				<span>
-					<button class="btn btn-default" type="button">
+					<button class="btn btn-default" type="button" 
+					 (click)="sort('status')">
 						Completed
 					</button>
 				</span>
@@ -55,12 +59,12 @@
 						<th></th>
 						<th></th>
 					</tr>
-					<tr *ngFor='let task of tasks'>
+					<tr *ngFor='let task of tasks | orderBy: orderByKey : sortReverse'>
 						<td>{{task.name}}</td>
 						<td>{{task.parentTaskId}}</td>
 						<td>{{task.priority}}</td>
-						<td>{{task.startDate}}</td>
-						<td>{{task.endDate}}</td>
+						<td>{{task.startDate | date:'MM/dd/yyyy'}}</td>
+						<td>{{task.endDate | date:'MM/dd/yyyy'}}</td>
 						<td>
 							<button class="btn btn-default" type="button" (click)='editTask(task.id)'>
 								Edit

@@ -16,6 +16,8 @@ export class UserDetailComponent implements OnInit {
   saveButtonLabel: string = 'Add';
   errorMessage: string;
   user: IUser;
+  orderByKey: string;
+  sortReverse: boolean = false;
   isEdit: boolean = false;
   
   _listFilter: string;
@@ -38,6 +40,13 @@ export class UserDetailComponent implements OnInit {
 	});
 	
     this.refreshUserList();
+  }
+  
+  sort(key): void {
+	if(this.orderByKey == key){
+		this.sortReverse = !this.sortReverse
+	}
+	this.orderByKey = key;
   }
   
   save(): void {

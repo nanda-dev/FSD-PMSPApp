@@ -13,7 +13,7 @@ import { ITask } from './task';
 
 @Injectable()
 export class TaskService {
-    private baseUrl = 'api/tasks';
+    private baseUrl = 'http://localhost:8085/api/task';
 	private _taskUrl = './api/tasks.json';
 
     constructor(private http: Http) { }
@@ -24,10 +24,18 @@ export class TaskService {
             .do(data => console.log('getTasks: ' + JSON.stringify(data)))
             .catch(this.handleError);
     }
+	
+	getTasksByProject(projectId: number): Observable<ITask[]> {
+		const url = `${this.baseUrl}/project/${projectId}`;
+        return this.http.get(url)
+            .map((response: Response) => <ITask[]>response.json())
+            .do(data => console.log('getTasks: ' + JSON.stringify(data)))
+            .catch(this.handleError);
+    }
 
     getTask(id: number): Observable<ITask> {
-		console.log('GETTASK');
-        if (id === 0) {
+		console.log('GETTASK:' + id);
+        if (id === undefined || id === 0) {
 			return Observable.of(this.initializeTask());
         // return Observable.create((observer: any) => {
         //     observer.next(this.initializeProduct());
@@ -35,8 +43,10 @@ export class TaskService {
         // });
         };
         const url = `${this.baseUrl}/${id}`;
-        return this.getTasks()
-				.map(tasks => tasks.find(task => task.id === id));
+        return this.http.get(url)
+            .map((response: Response) => <ITask>response.json())
+            .do(data => console.log('getTaskById: ' + JSON.stringify(data)))
+            .catch(this.handleError);
     }
 	
 	
@@ -51,11 +61,11 @@ export class TaskService {
             .catch(this.handleError);
     }
 
-    saveTask(task: ITask): Observable<ITask> {
+    saveTask(task: ITask, isEdit: boolean): Observable<ITask> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
 
-        if (task.id === 0) {
+        if (!isEdit) {
             return this.createTask(task, options);
         }
         return this.updateTask(task, options);

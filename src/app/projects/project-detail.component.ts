@@ -30,7 +30,12 @@ export class ProjectDetailComponent implements OnInit {
 	saveButtonLabel: string = 'Add';
 	isEdit: boolean = false;
 	
-	managerId: number;	
+	managerId: number;
+	selectedUser: IUser;
+	
+	orderByKey: string;
+	sortReverse: boolean = false;
+	
 	users: IUser[];
 	filteredUsers: IUser[];
 	
@@ -53,6 +58,9 @@ export class ProjectDetailComponent implements OnInit {
 	}
 	
 	minDate: Date;
+	startDateInitial: Date;
+	endDateInitial: Date;
+	dateRangeInit: Date[];
 
 	constructor(private projSvc: ProjectService, 
 				private fb: FormBuilder,
@@ -60,11 +68,10 @@ export class ProjectDetailComponent implements OnInit {
 				private usrSvc: UserService) { 
 				
 	
+		//Sample minDate to set in datePicker		
 		this.minDate = new Date();
 		this.minDate.setDate(this.minDate.getDate() - 7);
-	}
-				
-	
+	}	
 	
 	ngOnInit() {
 		//Set theme for date-picker
@@ -104,6 +111,7 @@ export class ProjectDetailComponent implements OnInit {
 	
 	editProject(project: IProject): void {
 		//console.log('edit project.id=' + project.id);
+		this.project = project;
 		this.projectForm.patchValue({
 			name: project.name,
 			managerId: project.managerId,
@@ -118,11 +126,13 @@ export class ProjectDetailComponent implements OnInit {
 			this.projectForm.controls['dateRange'].enable();
 		}
 		
+		this.startDateInitial = new Date(project.startDate);
+		this.endDateInitial = new Date(project.endDate);
+		this.dateRangeInit = [this.startDateInitial, this.endDateInitial];
+		
 		this.saveButtonLabel = 'Update';
 		this.isEdit = true;
-	}
-	
-	
+	}	
 	
 	resetForm(): void {
 		this.projectForm.reset();
@@ -153,10 +163,10 @@ export class ProjectDetailComponent implements OnInit {
 		p.startDate = this.projectForm.controls['dateRange'].value[0].toISOString();
 		p.endDate = this.projectForm.controls['dateRange'].value[1].toISOString();
 		
-		//There seems to be some issues when assigning managerId value from form to IProject object,
-		//could because the field is disabled in template? Hence using this workaround for now.
-		
-		p.managerId = this.managerId;
+		console.log('managerId=' + this.projectForm.controls['managerId'].value);
+		//There seems to be some issues when assigning managerId value from form to IProject object.
+		//Could be because the field is disabled in template? Hence using this workaround for now.		
+		p.managerId = this.projectForm.controls['managerId'].value;
 		
 		console.log('saveProject:' + JSON.stringify(p));
 		
@@ -181,7 +191,7 @@ export class ProjectDetailComponent implements OnInit {
 						error => this.errorMessage = <any>error);
 	}
 	
-	check(): void {
+	toggleSetDates(): void {
 		//console.log(this.projectForm.controls['setDates'].value);
 		if(!this.projectForm.controls['setDates'].value){
 			this.projectForm.controls['dateRange'].disable();				
@@ -195,10 +205,25 @@ export class ProjectDetailComponent implements OnInit {
 		this.modalRef = this.modalService.show(template);
 	}
 	
-	selectUser(user: any): void {
-		console.log('Selected Manager:' + JSON.stringify(user));
+	selectUser(): void {
+		/*console.log('Selected Manager:' + JSON.stringify(user));
 		this.managerId = user.id;
-		this.projectForm.patchValue({managerId: user.id});
+		this.projectForm.patchValue({managerId: user.id});*/
+	}
+	
+	closeUserPopUp(): void {
+		console.log('selectedUser=' + JSON.stringify(this.selectedUser));		
+		if(this.selectedUser){
+			this.projectForm.patchValue({managerId: this.selectedUser.id});			
+		}
+		this.modalRef.hide();
+	}
+	
+	sort(key): void {
+		if(this.orderByKey == key){
+			this.sortReverse = !this.sortReverse
+		}
+		this.orderByKey = key;
 	}
 
 }

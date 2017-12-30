@@ -22,15 +22,18 @@ export class TaskDetailComponent implements OnInit {
 	projectId: string;
 	selectedProj: IProject;
 	
+	orderByKey: string;
+	sortReverse: boolean = false;
+	
 	constructor(private taskSvc: TaskService, 
 				private projSvc: ProjectService, 
 				private modalService: BsModalService, 
 				private _router: Router) { }
 
 	ngOnInit() {
-		this.taskSvc.getTasks()
+		/*this.taskSvc.getTasks()
                 .subscribe(tasks => this.tasks = tasks,
-                           error => this.errorMessage = <any>error);
+                           error => this.errorMessage = <any>error);*/
 		this.projSvc.getProjects()
                 .subscribe(projects => {
 							this.projects = projects;							
@@ -60,15 +63,32 @@ export class TaskDetailComponent implements OnInit {
 		console.log('selectedProj==' + this.selectedProj);
 		if(this.selectedProj){
 			this.projectId = '' + this.selectedProj.id;
-			this.taskSvc.getTasks()
+			this.refreshTaskList();
+			/*this.taskSvc.getTasks()
                 .subscribe(tasks => {
 										this.tasks = tasks.filter( (task: ITask) => task.projectId === this.selectedProj.id);
 										console.log('tasksByProj='+JSON.stringify(this.tasks));
 									},
-                           error => this.errorMessage = <any>error);
+                           error => this.errorMessage = <any>error);*/
 		}
 		//modalRef.hide()
 		this.modalRef.hide();
+	}
+	
+	refreshTaskList(): void {
+		this.taskSvc.getTasksByProject(this.selectedProj.id)
+                .subscribe(tasks => {										
+										this.tasks = tasks;
+										console.log('tasksByProj=' + JSON.stringify(this.tasks));
+									},
+                           error => this.errorMessage = <any>error);
+	}
+	
+	sort(key): void {
+		if(this.orderByKey == key){
+			this.sortReverse = !this.sortReverse
+		}
+		this.orderByKey = key;
 	}
 
 }

@@ -19,6 +19,8 @@ import { UserService } from '../users/user.service';
 })
 export class TaskAddEditComponent implements OnInit {
 	taskForm: FormGroup;
+	startDateInitial: any;
+	endDateInitial: any;
 		
 	errorMessage: string;
 	saveButtonLabel: string = 'Add Task';
@@ -26,15 +28,21 @@ export class TaskAddEditComponent implements OnInit {
 	
 	projects: IProject[];
 	filteredProjects: IProject[];
+	selectedProj: IProject;
 	
 	users: IUser[];
 	filteredUsers: IUser[];
+	selectedUser: IUser;
 	
 	tasks: ITask[];
 	filteredTasks: ITask[];	
+	selectedTask: ITask;
 	
 	paramId: number;
 	task: ITask;
+	
+	isEdit: boolean = false;
+	hasStartDate: boolean = false;
 	
 	_projectsFilter: string;
 	get projectsFilter(): string {
@@ -85,27 +93,29 @@ export class TaskAddEditComponent implements OnInit {
 							this.filteredUsers = this.users;
 							},
                            error => this.errorMessage = <any>error);
-		this.taskSvc.getTasks()
+		
+		//Get tasks after selecting the project.
+		/*this.taskSvc.getTasks()
                 .subscribe(tasks => {
 								this.tasks = tasks;
 								this.filteredTasks = this.tasks;
 							},
-                           error => this.errorMessage = <any>error);
+                           error => this.errorMessage = <any>error);*/
 						   
 		//const param = +this._route.snapshot.paramMap.get('id');
 		
 		this._route.params.subscribe(params => this.paramId = params['id']);
 		
 		this.taskForm = this.fb.group({
-			taskName: '',
-			projectId: '',
+			name: null,
+			projectId: undefined,
 			isParent: false,
-			parentTaskId: '',
-			userId: '',
-			priority: '', 
-			startDate: '', 
-			endDate: '',
-			id: ''
+			parentTaskId: undefined,
+			userId: undefined,
+			priority: undefined, 
+			startDate: null, 
+			endDate: null,
+			id: undefined
 		});
 		
 		//if pathParam indicates update screen is to be used,
@@ -113,12 +123,14 @@ export class TaskAddEditComponent implements OnInit {
 		if(!(this.paramId == undefined || isNaN(this.paramId))) {
 			//Edit Task
 			//console.log('param=' + param + ', this.paramId=' + this.paramId);
-			console.log('this.paramId=' + this.paramId);
+			console.log('(Edit Task) this.paramId=' + this.paramId);
+			this.isEdit = true;
 			this.saveButtonLabel = 'Update Task';
 			this.taskSvc.getTask(this.paramId)
                 .subscribe(task => {
-								this.task = task;	
-								
+								this.task = task;
+								this.startDateInitial = new Date(task.startDate);
+								this.endDateInitial = new Date(task.endDate);
 							},
                            error => this.errorMessage = <any>error);
 			//console.log('taskObj.name=' + this.task.name);
@@ -128,7 +140,8 @@ export class TaskAddEditComponent implements OnInit {
 		else {
 			//New Task
 			//console.log('param=' + param + ', this.paramId=' + this.paramId);
-			console.log('this.paramId=' + this.paramId);
+			console.log('(New Task) this.paramId=' + this.paramId);
+			this.isEdit = false;
 			
 		}
 	}
@@ -153,37 +166,102 @@ export class TaskAddEditComponent implements OnInit {
 	}
 	
 	save(): void {
-		console.log('Save Task:' + JSON.stringify(this.taskForm));//ToDo		
-	}
-	
-	resetForm(): void {
-		this.taskForm.reset();
-		this.saveButtonLabel = 'Add Task';		
-	}
-	
-	showModalPopUp(template: TemplateRef<any>) {
-		this.modalRef = this.modalService.show(template);
-	}
-	
-	selectUser(user: any): void {
-		console.log(user);
-		this.taskForm.patchValue({userId: user.id});
-	}
-	
-	selectTask(task: any): void {
-		console.log(task);
-		this.taskForm.patchValue({parentTaskId: task.id});
-	}
-	
-	selectProject(proj: any): void {
-		console.log(proj);
-		this.taskForm.patchValue({projectId: proj.id});
+		//console.log('Save Task:' + JSON.stringify(this.taskForm));//ToDo	
+		let t = Object.assign({}, this.task, this.taskForm.value);
+		console.log('Save Task: ' + JSON.stringify(t));
+		this.taskSvc.saveTask(t, this.isEdit)
+				.subscribe(task => {
+					console.log('Task saved:' + JSON.stringify(task));
+					this.resetForm();
+				}, error => this.errorMessage = <any>error);
 	}
 	
 	disableControlsForEdit(): void {
 		this.taskForm.controls['isParent'].disable();
 		this.taskForm.controls['projectId'].disable();
 		
+	}
+	
+	resetForm(): void {
+		this.taskForm.reset();
+		this.saveButtonLabel = 'Add Task';		
+		this.isEdit = false;
+	}
+	
+	showModalPopUp(template: TemplateRef<any>) {
+		this.modalRef = this.modalService.show(template);
+	}
+	
+	selectUser(): void {
+		//console.log(user);
+		//this.taskForm.patchValue({userId: user.id});
+	}
+	
+	selectTask(): void {
+		//console.log(task);
+		//this.taskForm.patchValue({parentTaskId: task.id});
+	}
+	
+	selectProject(): void {
+		console.log(JSON.stringify(this.selectedProj));
+		//this.taskForm.patchValue({projectId: proj.id});
+	}	
+	
+	closeUserPopUp(): void {
+		console.log('selectedUser=' + JSON.stringify(this.selectedUser));		
+		if(this.selectedUser){
+			this.taskForm.patchValue({userId: this.selectedUser.id});			
+		}
+		this.modalRef.hide();
+	}
+	
+	closeTaskPopUp(): void {
+		console.log('selectedTask=' + JSON.stringify(this.selectedTask));		
+		if(this.selectedTask){
+			this.taskForm.patchValue({parentTaskId: this.selectedTask.id});			
+		}
+		this.modalRef.hide();
+	}
+	
+	closeProjectPopUp(): void {
+		console.log('selectedProj=' + JSON.stringify(this.selectedProj));		
+		if(this.selectedProj){
+			this.taskForm.patchValue({projectId: this.selectedProj.id});
+			this.taskSvc.getTasksByProject(this.selectedProj.id)
+                .subscribe(tasks => {
+										//Filter Parent tasks (move it to new API?):
+										this.tasks = tasks.filter( (task: ITask) => !task.parentTaskId );
+										this.filteredTasks = this.tasks;
+										console.log('parentTasksByProj=' + JSON.stringify(this.tasks));
+									},
+                           error => this.errorMessage = <any>error);
+		}
+		this.modalRef.hide();
+	}
+	
+	changeStartDate(startDate: any): void {
+		const endDateCtrl = this.taskForm.controls['endDate'];
+		let endDateVal = endDateCtrl.value;
+		if (!!startDate) {
+			if(!!endDateVal){
+				endDateVal = (startDate.getTime() > endDateVal.getTime()) ? null : endDateVal;
+			}
+			endDateCtrl.reset({ value: endDateVal, disabled: false });
+		} else {
+			endDateCtrl.reset({ value: null, disabled: true });
+		}
+		
+		/*this.hasStartDate = this.taskForm.controls['startDate'].value ? true : false;
+		if(this.hasStartDate){
+			this.taskForm.controls['endDate'].enable();
+		}
+		else {
+			this.taskForm.controls['endDate'].disable();
+		}*/
+			
+	}
+	
+	changeEndDate(endDate: any): void {
 	}
 
 }
