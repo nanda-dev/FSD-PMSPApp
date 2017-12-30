@@ -48,6 +48,11 @@ export class TaskDetailComponent implements OnInit {
 	
 	endTask(taskId: number): void {
 		console.log('End Task: ' + taskId);
+		this.taskSvc.endTask(taskId)
+				.subscribe(task => {
+					console.log('Task ended:' + JSON.stringify(task));
+					this.refreshTaskList();					
+				}, error => this.errorMessage = <any>error);
 	}	
 	
 	showModalPopUp(template: TemplateRef<any>) {
