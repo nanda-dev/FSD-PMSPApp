@@ -81,9 +81,20 @@ export class TaskService {
 
     private updateTask(task: ITask, options: RequestOptions): Observable<ITask> {
         const url = `${this.baseUrl}/${task.id}`;
-        return this.http.put(url, task, options)
+        return this.http.put(this.baseUrl, task, options)
             .map(() => task)
             .do(data => console.log('updateTask: ' + JSON.stringify(data)))
+            .catch(this.handleError);
+    }
+	
+	endTask(taskId: number): Observable<ITask> {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        let options = new RequestOptions({ headers: headers });
+		let task = null;
+        const url = `${this.baseUrl}/${taskId}`;
+        return this.http.put(url, {}, options)
+            .map(() => task)
+            .do(data => console.log('endTask: ' + JSON.stringify(data)))
             .catch(this.handleError);
     }
 
