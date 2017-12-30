@@ -23,10 +23,10 @@
                                                          userForm.get('firstName').dirty) && 
                                                          userForm.get('firstName').errors">
                             <span *ngIf="userForm.get('firstName').errors.required">
-                                Please enter your first name.
+                                Please enter first name.
                             </span>
                             <span *ngIf="userForm.get('firstName').errors.minlength">
-                                The first name must be longer than 3 characters.
+                                First name must be longer than 3 characters.
                             </span>
                         </span>
                     </div>
@@ -45,10 +45,10 @@
                                formControlName="lastName" />
                         <span class="help-block" *ngIf="(userForm.get('lastName').touched || userForm.get('lastName').dirty) && userForm.get('lastName').errors">
                             <span *ngIf="userForm.get('lastName').errors.required">
-                                Please enter your last name.
+                                Please enter last name.
                             </span>
-                             <span *ngIf="userForm.controls.lastName.errors.maxlength">
-                                The last name must be less than 50 characters.
+                            <span *ngIf="userForm.controls.lastName.errors.maxlength">
+                                Last name must be less than 50 characters.
                             </span>
                        </span>
                     </div>
@@ -69,8 +69,8 @@
                             <span *ngIf="userForm.get('id').errors.required">
                                 Please enter the employee Id.
                             </span>
-                             <span *ngIf="userForm.controls.id.errors.maxlength">
-                                The last name must be less than 10 characters.
+                             <span *ngIf="userForm.controls.id.errors.pattern">
+                                Employee ID must be a six digit number.
                             </span>
                        </span>
                     </div>

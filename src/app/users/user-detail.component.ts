@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 import { IUser } from './user';
 import { UserService } from './user.service';
@@ -34,12 +34,16 @@ export class UserDetailComponent implements OnInit {
 
   ngOnInit(): void {
 	this.userForm = this.fb.group({
-	  firstName: '',
-	  lastName: '',
-	  id: ''		  
+	  firstName: ['', [Validators.required, Validators.minLength(3)]],
+	  lastName: ['', [Validators.required]],
+	  id: ['',[Validators.required, Validators.pattern('[0-9]{6}')]]		  
 	});
 	
     this.refreshUserList();
+	
+	//control.setValidators([]);
+	//control.clearValidators();
+	//control.updateValueAndValidity();
   }
   
   sort(key): void {
