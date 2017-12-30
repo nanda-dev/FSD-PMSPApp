@@ -5,26 +5,29 @@
               (ngSubmit)="save()"
               [formGroup]="taskForm">
 				<fieldset>
-					<div class='form-group row'>
+					<div class='form-group row' 
+							[ngClass]="{'has-error': (taskForm.get('projectId').touched || taskForm.get('projectId').dirty) && !taskForm.get('projectId').valid }">
 						<label class="col-md-2 control-label" 
 								   for="projectId">Project</label>
 						<div class="col-md-4">
 							<input class="form-control" 
 								   id="projectId" 
 								   type="text" 
+								   readonly 
 								   placeholder="Select Project ID" 
 								   formControlName="projectId" />
 						</div>	
 						<div class="col-md-3">					
 							<button class="btn btn-default float-right"
 									type="button" (click)='showModalPopUp(projModal)' 
-									[disabled]="isEdit && !taskForm.isParent">
+									[disabled]="isEdit">
 								Search
 							</button>					
 						</div>
 					</div>
 					
-					<div class='form-group row'>
+					<div class='form-group row' 
+							[ngClass]="{'has-error': (taskForm.get('name').touched || taskForm.get('name').dirty) && !taskForm.get('name').valid }">
 						<label class="col-md-2 col-md-offset-0 control-label" 
 								   for="nameId">Task</label>
 						<div class="col-md-6 col-md-offset-0">
@@ -33,7 +36,14 @@
 								   type="text" 
 								   placeholder="Task Name" 
 								   formControlName="name" />
-						</div>				
+						</div>	
+						<span class="help-block col-md-2 col-md-offset-0" *ngIf="(taskForm.get('name').touched || 
+                                                         taskForm.get('name').dirty) && 
+                                                         taskForm.get('name').errors">
+                            <span *ngIf="taskForm.get('name').errors.required">
+                                Please enter task name.
+                            </span>                            
+                        </span>
 					</div>
 					
 					<div class="form-group">
@@ -41,7 +51,8 @@
 							<label>
 								<input id="isParentId"
 									   type="checkbox"
-									   formControlName="isParent" >
+									   formControlName="isParent" 
+									   (click)="toggleParentTask()">
 								Parent Task
 							</label>
 						</div>
@@ -49,71 +60,102 @@
 				
 					
 					
-					<div class='form-group row'>
-						<label class="col-md-2 col-md-offset-0 control-label" 
-								   for="priorityId">Priority</label>
-						<div class="col-md-6 col-md-offset-0">
-							<input class="form-control" 
-                               id="priorityId" 
-                               type="range" 
-							   min="0"
-							   max="30"
-							   step="1"
-							   formControlName="priority" />  
-							<span style='display: inline'>{{taskForm.get('priority').value}}</span>
-						</div>				
-					</div>
-					
-					<div class='form-group'>
-						<label class="col-md-2 col-md-offset-0 control-label" 
-								   for="parentTaskId">Parent Task</label>
-						<div class="col-md-4 col-md-offset-0">
-							<input class="form-control" 
-								   id="parentTaskId" 
-								   type="text" 
-								   placeholder="Select Parent Task" 
-								   formControlName="parentTaskId" />
-						</div>	
-						<div class="col-md-1 col-md-offset-1">					
-							<button class="btn btn-default float-right"
-									type="button" (click)='showModalPopUp(taskModal)'>
-								Search
-							</button>					
+					<!--<div formGroupName="nonParentFields">-->
+						<div class='form-group row'>
+							<label class="col-md-2 col-md-offset-0 control-label" 
+									   for="priorityId">Priority</label>
+							<div class="col-md-6 col-md-offset-0">
+								<input class="form-control" 
+								   id="priorityId" 
+								   type="range" 
+								   min="0"
+								   max="30"
+								   step="1"
+								   formControlName="priority" />  
+								<span style='display: inline'>{{taskForm.get('priority').value}}</span>
+							</div>				
 						</div>
-					</div>
-					
-					<div class='form-group'>
-						<label class="col-md-2 col-md-offset-0 control-label" 
-								   for="startDateId">Start Date</label>
-						<div class="col-md-2 col-md-offset-0">
-							<input type="text" class="form-control" placeholder="Start Date" bsDatepicker formControlName="startDate" 
-							(bsValueChange)='changeStartDate($event)' [bsValue]="startDateInitial"/>
-						</div>	
-						<label class="col-md-2 col-md-offset-0 control-label" 
-								   for="endDateId">End Date</label>
-						<div class="col-md-2 col-md-offset-0">
-							<input type="text" class="form-control" placeholder="End Date" bsDatepicker formControlName="endDate" 
-							(bsValueChange)='changeEndDate($event)' [bsValue]="endDateInitial" [minDate]="taskForm.get('startDate').value"/>
+						
+						<div class='form-group'>
+							<label class="col-md-2 col-md-offset-0 control-label" 
+									   for="parentTaskId">Parent Task</label>
+							<div class="col-md-4 col-md-offset-0">
+								<input class="form-control" 
+									   id="parentTaskId" 
+									   type="text" 
+									   readonly 
+									   placeholder="Select Parent Task" 
+									   formControlName="parentTaskId" />
+							</div>	
+							<div class="col-md-1 col-md-offset-1">					
+								<button class="btn btn-default float-right"
+										type="button" 
+										[disabled]="isParentTask" 
+										(click)='showModalPopUp(taskModal)'>
+									Search
+								</button>					
+							</div>
 						</div>
-					</div>
-					
-					<div class='form-group'>
-						<label class="col-md-2 col-md-offset-0 control-label" 
-								   for="userId">User</label>
-						<div class="col-md-4 col-md-offset-0">
-							<input class="form-control" 
-								   id="userId" 
-								   type="text" 
-								   placeholder="Select User" 
-								   formControlName="userId" />
-						</div>	
-						<div class="col-md-1 col-md-offset-1">					
-							<button class="btn btn-default float-right"
-									type="button" (click)='showModalPopUp(usrModal)'>
-								Search
-							</button>					
+						
+						<div class='form-group' 
+							[ngClass]="{'has-error': ((taskForm.get('startDate').touched || taskForm.get('startDate').dirty) && !taskForm.get('startDate').valid)
+													|| ((taskForm.get('endDate').touched || taskForm.get('endDate').dirty) && !taskForm.get('endDate').valid)}">
+													
+							<label class="col-md-2 col-md-offset-0 control-label" 
+									   for="startDateId">Start Date</label>
+									   
+							<div class="col-md-2 col-md-offset-0">
+								<input type="text" class="form-control" placeholder="Start Date" bsDatepicker formControlName="startDate" 
+								(bsValueChange)='changeStartDate($event)' [bsValue]="startDateInitial"/>
+							</div>	
+							
+							<label class="col-md-2 col-md-offset-0 control-label" 
+									   for="endDateId">End Date</label>
+									   
+							<div class="col-md-2 col-md-offset-0">
+								<input type="text" class="form-control" placeholder="End Date" bsDatepicker formControlName="endDate" 
+								(bsValueChange)='changeEndDate($event)' [bsValue]="endDateInitial" [minDate]="taskForm.get('startDate').value"/>
+							</div>
+							
+							<span class="help-block col-md-2 col-md-offset-0" 
+									*ngIf="((taskForm.get('startDate').touched || taskForm.get('startDate').dirty) && !taskForm.get('startDate').valid)
+													|| ((taskForm.get('endDate').touched || taskForm.get('endDate').dirty) && !taskForm.get('endDate').valid)">
+								<span *ngIf="taskForm.get('startDate').errors.required || taskForm.get('endDate').errors.required">
+									Please select task start and end dates.
+								</span>   
+							
+							</span>
 						</div>
-					</div>
+						
+						<div class='form-group' 
+								[ngClass]="{'has-error': (taskForm.get('userId').touched || taskForm.get('userId').dirty) && !taskForm.get('userId').valid }">
+							<label class="col-md-2 col-md-offset-0 control-label" 
+									   for="userId">User</label>
+							<div class="col-md-4 col-md-offset-0">
+								<input class="form-control" 
+									   id="userId" 
+									   type="text" 
+									   readonly 
+									   placeholder="Select User" 
+									   formControlName="userId" />
+							</div>	
+							<div class="col-md-1 col-md-offset-1">					
+								<button class="btn btn-default float-right"
+										type="button" 
+										[disabled]="isParentTask" 
+										(click)='showModalPopUp(usrModal)'>
+									Search
+								</button>					
+							</div>
+							<span class="help-block" *ngIf="(taskForm.get('userId').touched || 
+                                                         taskForm.get('userId').dirty) && 
+                                                         taskForm.get('userId').errors">
+								<span *ngIf="taskForm.get('userId').errors.required">
+									Please select user id.
+								</span>                            
+							</span>
+						</div>
+					<!--</div>-->
 					
 					<div class="form-group">
 						<div class="col-md-6 col-md-offset-2">

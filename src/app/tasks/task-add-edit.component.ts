@@ -1,5 +1,5 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { BsModalService } from 'ngx-bootstrap/modal';
@@ -43,6 +43,7 @@ export class TaskAddEditComponent implements OnInit {
 	
 	isEdit: boolean = false;
 	hasStartDate: boolean = false;
+	isParentTask: boolean = false;
 	
 	_projectsFilter: string;
 	get projectsFilter(): string {
@@ -107,14 +108,14 @@ export class TaskAddEditComponent implements OnInit {
 		this._route.params.subscribe(params => this.paramId = params['id']);
 		
 		this.taskForm = this.fb.group({
-			name: null,
-			projectId: undefined,
+			name: ['', [Validators.required, Validators.minLength(3)]],
+			projectId: [undefined, Validators.required], 
 			isParent: false,
-			parentTaskId: undefined,
-			userId: undefined,
+			parentTaskId: undefined, 
+			userId: [undefined, Validators.required], 
 			priority: undefined, 
-			startDate: null, 
-			endDate: null,
+			startDate: [new Date(), Validators.required], 
+			endDate: [null, Validators.required], 
 			id: undefined
 		});
 		
@@ -123,7 +124,7 @@ export class TaskAddEditComponent implements OnInit {
 		if(!(this.paramId == undefined || isNaN(this.paramId))) {
 			//Edit Task
 			//console.log('param=' + param + ', this.paramId=' + this.paramId);
-			console.log('(Edit Task) this.paramId=' + this.paramId);
+			console.log('(Edit Task) this.paramId=' + this.paramId);			
 			this.isEdit = true;
 			this.saveButtonLabel = 'Update Task';
 			this.taskSvc.getTask(this.paramId)
@@ -131,9 +132,19 @@ export class TaskAddEditComponent implements OnInit {
 								this.task = task;
 								this.startDateInitial = new Date(task.startDate);
 								this.endDateInitial = new Date(task.endDate);
+								console.log('this.task.name=' + this.task.name);
+								console.log('this.task.projectId=' + this.task.projectId);
+								this.taskForm.patchValue({
+									projectId: this.task.projectId,
+									name: this.task.name,
+									priority: this.task.priority,
+									isParent: (this.task.parentTaskId ? false : true), 
+									parentTaskId: this.task.parentTaskId, 
+									userId: this.task.userId,
+									id: this.task.id
+								});
 							},
                            error => this.errorMessage = <any>error);
-			//console.log('taskObj.name=' + this.task.name);
 			
 			this.disableControlsForEdit();
 		}
@@ -178,8 +189,7 @@ export class TaskAddEditComponent implements OnInit {
 	
 	disableControlsForEdit(): void {
 		this.taskForm.controls['isParent'].disable();
-		this.taskForm.controls['projectId'].disable();
-		
+		//this.taskForm.controls['projectId'].disable();		
 	}
 	
 	resetForm(): void {
@@ -226,7 +236,7 @@ export class TaskAddEditComponent implements OnInit {
 	closeProjectPopUp(): void {
 		console.log('selectedProj=' + JSON.stringify(this.selectedProj));		
 		if(this.selectedProj){
-			this.taskForm.patchValue({projectId: this.selectedProj.id});
+			this.taskForm.patchValue({ projectId: this.selectedProj.id, parentTaskId: null });
 			this.taskSvc.getTasksByProject(this.selectedProj.id)
                 .subscribe(tasks => {
 										//Filter Parent tasks (move it to new API?):
@@ -241,7 +251,8 @@ export class TaskAddEditComponent implements OnInit {
 	
 	changeStartDate(startDate: any): void {
 		const endDateCtrl = this.taskForm.controls['endDate'];
-		let endDateVal = endDateCtrl.value;
+		let endDateVal = new Date();
+		endDateVal.setDate(endDateCtrl.value);
 		if (!!startDate) {
 			if(!!endDateVal){
 				endDateVal = (startDate.getTime() > endDateVal.getTime()) ? null : endDateVal;
@@ -263,5 +274,66 @@ export class TaskAddEditComponent implements OnInit {
 	
 	changeEndDate(endDate: any): void {
 	}
+	
+	toggleParentTask(): void {
+		this.isParentTask = !this.isParentTask;
+		if(this.isParentTask) {
+			this.disableNonParentFields();
+		}
+		else{
+			this.enableNonParentFields();
+		}
+	}
 
+	disableNonParentFields(): void {
+		this.taskForm.patchValue({
+			userId: '',
+			priority: undefined,
+			startDate: null, 
+			endDate: null
+		});
+		
+		this.taskForm.controls.userId.clearValidators();		
+		this.taskForm.controls.userId.updateValueAndValidity();
+		this.taskForm.controls.userId.disable();
+		
+		this.taskForm.controls.priority.disable();
+		
+		this.taskForm.controls.startDate.clearValidators();
+		this.taskForm.controls.startDate.updateValueAndValidity();
+		this.taskForm.controls.startDate.disable();
+		
+		this.taskForm.controls.endDate.clearValidators();
+		this.taskForm.controls.endDate.updateValueAndValidity();
+		this.taskForm.controls.endDate.disable();		
+	}
+	
+	enableNonParentFields(): void {
+		this.taskForm.controls.userId.setValidators(Validators.required);		
+		//this.taskForm.controls.userId.updateValueAndValidity();
+		this.taskForm.controls.userId.enable();
+		
+		this.taskForm.controls.priority.enable();
+		
+		this.taskForm.controls.startDate.setValidators(Validators.required);
+		//this.taskForm.controls.startDate.updateValueAndValidity();
+		this.taskForm.controls.startDate.enable();
+		
+		this.taskForm.controls.endDate.setValidators(Validators.required);
+		//this.taskForm.controls.endDate.updateValueAndValidity();
+		this.taskForm.controls.endDate.disable();
+		
+		/*this.taskForm.patchValue({
+			userId: ['', Validators.required],
+			startDate: [new Date(), Validators.required], 
+			endDate: [(new Date()).setDate((new Date()).getDate()+1), Validators.required]
+		});*/
+		
+		this.taskForm.patchValue({
+			userId: '',
+			startDate: new Date(), 
+			endDate: (new Date()).setDate((new Date()).getDate()+1)
+		});
+				
+	}
 }
