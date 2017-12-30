@@ -24,6 +24,8 @@ import { UserService } from './users/user.service';
 import { ProjectService } from './projects/project.service';
 import { TaskService } from './tasks/task.service';
 
+import { ProjectStatusPipe } from './projects/project-status.pipe';
+
 @NgModule({
   declarations: [
     AppComponent, 
@@ -33,7 +35,8 @@ import { TaskService } from './tasks/task.service';
 	UserDetailComponent,
 	ProjectDetailComponent,
 	TaskDetailComponent,
-	TaskAddEditComponent
+	TaskAddEditComponent, 
+	ProjectStatusPipe
   ],
   imports: [
     BrowserModule,
