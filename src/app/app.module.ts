@@ -25,6 +25,7 @@ import { ProjectService } from './projects/project.service';
 import { TaskService } from './tasks/task.service';
 
 import { ProjectStatusPipe } from './projects/project-status.pipe';
+import { ParentTaskPipe } from './tasks/parent-task.pipe';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { ProjectStatusPipe } from './projects/project-status.pipe';
 	ProjectDetailComponent,
 	TaskDetailComponent,
 	TaskAddEditComponent, 
-	ProjectStatusPipe
+	ProjectStatusPipe, 
+	ParentTaskPipe
   ],
   imports: [
     BrowserModule,

@@ -62,7 +62,7 @@
 					</tr>
 					<tr *ngFor='let task of tasks | orderBy: orderByKey : sortReverse'>
 						<td>{{task.name}}</td>
-						<td>{{task.parentTaskId}}</td>
+						<td>{{task.parentTaskId | parentTaskName: tasks }}</td>
 						<td>{{task.priority}}</td>
 						<td>{{task.startDate | date:'MM/dd/yyyy'}}</td>
 						<td>{{task.endDate | date:'MM/dd/yyyy'}}</td>
