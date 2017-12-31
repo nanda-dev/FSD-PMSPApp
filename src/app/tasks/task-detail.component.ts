@@ -42,15 +42,15 @@ export class TaskDetailComponent implements OnInit {
 	}
 	
 	editTask(taskId: number): void {
-		console.log('Edit Task: ' + taskId);
+		//console.log('Edit Task: ' + taskId);
 		this._router.navigate(['/taskupdate/' + taskId]);
 	}
 	
 	endTask(taskId: number): void {
-		console.log('End Task: ' + taskId);
+		//console.log('End Task: ' + taskId);
 		this.taskSvc.endTask(taskId)
 				.subscribe(task => {
-					console.log('Task ended:' + JSON.stringify(task));
+					//console.log('Task ended:' + JSON.stringify(task));
 					this.refreshTaskList();					
 				}, error => this.errorMessage = <any>error);
 	}	
@@ -60,21 +60,15 @@ export class TaskDetailComponent implements OnInit {
 	}
 	
 	selectProject(proj: IProject): void {
-		console.log(proj);
+		//console.log(proj);
 		this.selectedProj = proj;
 	}
 	
 	closePopUp(): void {
-		console.log('selectedProj==' + this.selectedProj);
+		//console.log('selectedProj==' + this.selectedProj);
 		if(this.selectedProj){
 			this.projectId = '' + this.selectedProj.id;
 			this.refreshTaskList();
-			/*this.taskSvc.getTasks()
-                .subscribe(tasks => {
-										this.tasks = tasks.filter( (task: ITask) => task.projectId === this.selectedProj.id);
-										console.log('tasksByProj='+JSON.stringify(this.tasks));
-									},
-                           error => this.errorMessage = <any>error);*/
 		}
 		//modalRef.hide()
 		this.modalRef.hide();
@@ -84,7 +78,7 @@ export class TaskDetailComponent implements OnInit {
 		this.taskSvc.getTasksByProject(this.selectedProj.id)
                 .subscribe(tasks => {										
 										this.tasks = tasks;
-										console.log('tasksByProj=' + JSON.stringify(this.tasks));
+										//console.log('tasksByProj=' + JSON.stringify(this.tasks));
 									},
                            error => this.errorMessage = <any>error);
 	}

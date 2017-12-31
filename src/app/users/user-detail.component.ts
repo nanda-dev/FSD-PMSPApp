@@ -54,14 +54,14 @@ export class UserDetailComponent implements OnInit {
   }
   
   save(): void {
-	  console.log('Save UserForm...isEdit?' + this.isEdit);
+	  //console.log('Save UserForm...isEdit?' + this.isEdit);
 	  //console.log('userForm = ' + JSON.stringify(this.userForm));
 	  let u = Object.assign({}, this.user, this.userForm.value);
-	  console.log('user = ' + u.id + ',' + u.firstName + ',' + u.lastName);
+	  //console.log('user = ' + u.id + ',' + u.firstName + ',' + u.lastName);
 	  
 	  this.usrSvc.saveUser(u, this.isEdit)
 				.subscribe(user => {
-					console.log('User Saved:' + user);
+					//console.log('User Saved:' + user);
 					this.resetForm();
 					this.refreshUserList();																	
 				},
@@ -70,7 +70,7 @@ export class UserDetailComponent implements OnInit {
   }
   
   editUser(user: IUser): void {
-	console.log('user.id=' + user.id);
+	//console.log('user.id=' + user.id);
 	this.userForm.patchValue({
 		firstName: user.firstName,
 		lastName: user.lastName,
@@ -82,10 +82,10 @@ export class UserDetailComponent implements OnInit {
   }
   
   deleteUser(id: number) {
-	  console.log('Delete user id: ' + id);
+	  //console.log('Delete user id: ' + id);
 	  this.usrSvc.deleteUser(id)
 				.subscribe(user => {
-								console.log('User deleted:' + (user ? user ['id'] : 'undefined'));
+								//console.log('User deleted:' + (user ? user ['id'] : 'undefined'));
 								this.refreshUserList();
 							},
 						   error => this.errorMessage = <any>error);

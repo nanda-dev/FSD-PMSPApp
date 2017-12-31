@@ -124,7 +124,7 @@ export class TaskAddEditComponent implements OnInit {
 		if(!(this.paramId == undefined || isNaN(this.paramId))) {
 			//Edit Task
 			//console.log('param=' + param + ', this.paramId=' + this.paramId);
-			console.log('(Edit Task) this.paramId=' + this.paramId);			
+			//console.log('(Edit Task) this.paramId=' + this.paramId);			
 			this.isEdit = true;
 			this.saveButtonLabel = 'Update Task';
 			this.taskSvc.getTask(this.paramId)
@@ -132,8 +132,8 @@ export class TaskAddEditComponent implements OnInit {
 								this.task = task;
 								this.startDateInitial = new Date(task.startDate);
 								this.endDateInitial = new Date(task.endDate);
-								console.log('this.task.name=' + this.task.name);
-								console.log('this.task.projectId=' + this.task.projectId);
+								//console.log('this.task.name=' + this.task.name);
+								//console.log('this.task.projectId=' + this.task.projectId);
 								this.taskForm.patchValue({
 									projectId: this.task.projectId,
 									name: this.task.name,
@@ -151,7 +151,7 @@ export class TaskAddEditComponent implements OnInit {
 		else {
 			//New Task
 			//console.log('param=' + param + ', this.paramId=' + this.paramId);
-			console.log('(New Task) this.paramId=' + this.paramId);
+			//console.log('(New Task) this.paramId=' + this.paramId);
 			this.isEdit = false;
 			
 		}
@@ -179,10 +179,10 @@ export class TaskAddEditComponent implements OnInit {
 	save(): void {
 		//console.log('Save Task:' + JSON.stringify(this.taskForm));//ToDo	
 		let t = Object.assign({}, this.task, this.taskForm.value);
-		console.log('Save Task: ' + JSON.stringify(t));
+		//console.log('Save Task: ' + JSON.stringify(t));
 		this.taskSvc.saveTask(t, this.isEdit)
 				.subscribe(task => {
-					console.log('Task saved:' + JSON.stringify(task));
+					//console.log('Task saved:' + JSON.stringify(task));
 					this.resetForm();
 				}, error => this.errorMessage = <any>error);
 	}
@@ -213,12 +213,12 @@ export class TaskAddEditComponent implements OnInit {
 	}
 	
 	selectProject(): void {
-		console.log(JSON.stringify(this.selectedProj));
+		//console.log(JSON.stringify(this.selectedProj));
 		//this.taskForm.patchValue({projectId: proj.id});
 	}	
 	
 	closeUserPopUp(): void {
-		console.log('selectedUser=' + JSON.stringify(this.selectedUser));		
+		//console.log('selectedUser=' + JSON.stringify(this.selectedUser));		
 		if(this.selectedUser){
 			this.taskForm.patchValue({userId: this.selectedUser.id});			
 		}
@@ -226,7 +226,7 @@ export class TaskAddEditComponent implements OnInit {
 	}
 	
 	closeTaskPopUp(): void {
-		console.log('selectedTask=' + JSON.stringify(this.selectedTask));		
+		//console.log('selectedTask=' + JSON.stringify(this.selectedTask));		
 		if(this.selectedTask){
 			this.taskForm.patchValue({parentTaskId: this.selectedTask.id});			
 		}
@@ -234,7 +234,7 @@ export class TaskAddEditComponent implements OnInit {
 	}
 	
 	closeProjectPopUp(): void {
-		console.log('selectedProj=' + JSON.stringify(this.selectedProj));		
+		//console.log('selectedProj=' + JSON.stringify(this.selectedProj));		
 		if(this.selectedProj){
 			this.taskForm.patchValue({ projectId: this.selectedProj.id, parentTaskId: null });
 			this.taskSvc.getTasksByProject(this.selectedProj.id)
@@ -242,7 +242,7 @@ export class TaskAddEditComponent implements OnInit {
 										//Filter Parent tasks (move it to new API?):
 										this.tasks = tasks.filter( (task: ITask) => !task.parentTaskId );
 										this.filteredTasks = this.tasks;
-										console.log('parentTasksByProj=' + JSON.stringify(this.tasks));
+										//console.log('parentTasksByProj=' + JSON.stringify(this.tasks));
 									},
                            error => this.errorMessage = <any>error);
 		}

@@ -13,6 +13,7 @@ import { ITask } from './task';
 
 @Injectable()
 export class TaskService {
+	//ToDo: use config/env file to get URLs?
     private baseUrl = 'http://localhost:8085/api/task';
 	private _taskUrl = './api/tasks.json';
 
@@ -34,7 +35,7 @@ export class TaskService {
     }
 
     getTask(id: number): Observable<ITask> {
-		console.log('GETTASK:' + id);
+		//console.log('GETTASK:' + id);
         if (id === undefined || id === 0) {
 			return Observable.of(this.initializeTask());
         // return Observable.create((observer: any) => {

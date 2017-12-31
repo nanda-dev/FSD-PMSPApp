@@ -151,29 +151,29 @@ export class ProjectDetailComponent implements OnInit {
 	}
 	
 	save(): void {
-		console.log('date1=' + this.projectForm.controls['dateRange'].value[0].toISOString());
+		//console.log('date1=' + this.projectForm.controls['dateRange'].value[0].toISOString());
 		//let d = new Date();
 		//d.setDate(Date.parse(this.projectForm.controls['dateRange'].value[0].toISOString().replace('T',' ').replace('Z', '')));
 		//console.log('d=' + d);
 		
-		console.log('date2=' + this.projectForm.controls['dateRange'].value[1].toISOString());
-		console.log('setDates=' + this.projectForm.controls['setDates'].value);
+		//console.log('date2=' + this.projectForm.controls['dateRange'].value[1].toISOString());
+		//console.log('setDates=' + this.projectForm.controls['setDates'].value);
 		
 		
 		let p = Object.assign({}, this.project, this.projectForm.value);
 		p.startDate = this.projectForm.controls['dateRange'].value[0].toISOString();
 		p.endDate = this.projectForm.controls['dateRange'].value[1].toISOString();
 		
-		console.log('managerId=' + this.projectForm.controls['managerId'].value);
+		//console.log('managerId=' + this.projectForm.controls['managerId'].value);
 		//There seems to be some issues when assigning managerId value from form to IProject object.
 		//Could be because the field is disabled in template? Hence using this workaround for now.		
 		p.managerId = this.projectForm.controls['managerId'].value;
 		
-		console.log('saveProject:' + JSON.stringify(p));
+		//console.log('saveProject:' + JSON.stringify(p));
 		
 		this.projSvc.saveProject(p, this.isEdit)
 					.subscribe(proj => {
-							console.log('Proj saved:' + JSON.stringify(proj));
+							//console.log('Proj saved:' + JSON.stringify(proj));
 							this.resetForm();
 							this.refreshProjectList();
 						},
@@ -182,10 +182,10 @@ export class ProjectDetailComponent implements OnInit {
 	}
 	
 	suspendProject(projectId: number): void {
-		console.log('suspend project: ' + projectId);
+		//console.log('suspend project: ' + projectId);
 		this.projSvc.suspendProject(projectId)
 					.subscribe(proj => {
-							console.log('Proj suspendedd:' + JSON.stringify(proj));
+							//console.log('Proj suspendedd:' + JSON.stringify(proj));
 							this.resetForm();
 							this.refreshProjectList();
 						},
@@ -215,7 +215,7 @@ export class ProjectDetailComponent implements OnInit {
 	}
 	
 	closeUserPopUp(): void {
-		console.log('selectedUser=' + JSON.stringify(this.selectedUser));		
+		//console.log('selectedUser=' + JSON.stringify(this.selectedUser));		
 		if(this.selectedUser){
 			this.projectForm.patchValue({managerId: this.selectedUser.id});			
 		}

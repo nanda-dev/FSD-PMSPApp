@@ -12,6 +12,7 @@ import { IProject } from './project';
 
 @Injectable()
 export class ProjectService {
+	//ToDo: use config/env file to get URLs?
     private baseUrl = 'http://localhost:8085/api/project';
 	private _projectUrl = './api/projects.json';
 
@@ -74,9 +75,7 @@ export class ProjectService {
             .map(() => project)
             .do(data => console.log('updateProject: ' + JSON.stringify(data)))
             .catch(this.handleError);
-    }
-	
-	
+    }	
 	
 	suspendProject(id: number): Observable<IProject> {
         let headers = new Headers({ 'Content-Type': 'application/json' });

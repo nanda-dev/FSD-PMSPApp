@@ -12,6 +12,7 @@ import { IUser } from './user';
 
 @Injectable()
 export class UserService {
+	//ToDo: use config/env file to get URLs?
     private baseUrl = 'http://localhost:8085/api/user';
 	private _userUrl = './api/users.json';
 	

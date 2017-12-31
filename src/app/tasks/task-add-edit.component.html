@@ -178,7 +178,7 @@
 		</form>
 	</div>
 </div>
-<div>{{this.taskForm.controls['startDate'].value}}</div>
+
 
 <ng-template #usrModal>
   <div class="modal-header">
@@ -212,6 +212,7 @@
 		<button class="btn btn-primary" type="button" (click)='closeUserPopUp()' [disabled]='!selectedUser'>OK</button>
 	</div>
 </ng-template>
+
 <ng-template #taskModal>
   <div class="modal-header">
     <h4 class="modal-title pull-left">Select Parent Task ID</h4>
@@ -244,6 +245,7 @@
 		<button class="btn btn-primary" type="button" (click)='closeTaskPopUp()' [disabled]='!selectedTask'>OK</button>
 	</div>
 </ng-template>
+
 <ng-template #projModal>
   <div class="modal-header">
     <h4 class="modal-title pull-left">Select Project ID</h4>
