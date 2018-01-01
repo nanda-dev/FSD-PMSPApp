@@ -72,7 +72,7 @@
 							   formControlName="managerId" />                        
                     </div>
 					<div class="col-xs-2 text-right">
-						<button class="btn btn-default" type="button" (click)="showManagerModal(mgrModal)">Search</button>
+						<button class="btn btn-default" type="button" (click)="showModal(mgrModal)">Search</button>
 					</div>
                 </div>
 
@@ -150,7 +150,7 @@
 											</button><br/>
 										
 											<button class="btn btn-default" type="button" 
-											(click)='suspendProject(project.id)' [disabled]="project.status == 'S'">
+											(click)='suspendProject(project.id, confirmModal)' [disabled]="project.status == 'S'">
 												Suspend
 											</button>
 										</td>
@@ -210,4 +210,15 @@
 	<div class="modal-footer text-right">
 		<button class="btn btn-primary" type="button" (click)='closeUserPopUp()' [disabled]='!selectedUser'>OK</button>
 	</div>
+</ng-template>
+
+<ng-template #confirmModal>
+	<div class="modal-header">
+		<h4 class="modal-title pull-left">Confirm</h4>
+	</div>
+	<div class="modal-body">
+		<p>You have opted to suspend the project. Do you wish to proceed?</p>
+		<button type="button" class="btn btn-default" (click)="confirm()" >Yes</button>
+		<button type="button" class="btn btn-primary" (click)="decline()" >No</button>
+	</div>		
 </ng-template>

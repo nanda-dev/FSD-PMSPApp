@@ -62,6 +62,8 @@ export class ProjectDetailComponent implements OnInit {
 	startDateInitial: Date;
 	endDateInitial: Date;
 	dateRangeInit: Date[];
+	
+	projectIdToSuspend: number;
 
 	constructor(private projSvc: ProjectService, 
 				private fb: FormBuilder,
@@ -181,15 +183,10 @@ export class ProjectDetailComponent implements OnInit {
 		
 	}
 	
-	suspendProject(projectId: number): void {
+	suspendProject(projectId: number, template: TemplateRef<any>): void {
 		//console.log('suspend project: ' + projectId);
-		this.projSvc.suspendProject(projectId)
-					.subscribe(proj => {
-							//console.log('Proj suspendedd:' + JSON.stringify(proj));
-							this.resetForm();
-							this.refreshProjectList();
-						},
-						error => this.errorMessage = <any>error);
+		this.projectIdToSuspend = projectId;
+		this.showModal(template);		
 	}
 	
 	toggleSetDates(): void {
@@ -204,7 +201,7 @@ export class ProjectDetailComponent implements OnInit {
 		}
 	}
 	
-	showManagerModal(template: TemplateRef<any>) {
+	showModal(template: TemplateRef<any>) {
 		this.modalRef = this.modalService.show(template);
 	}
 	
@@ -238,10 +235,30 @@ export class ProjectDetailComponent implements OnInit {
 			dateRange: [today, nextDay]
 		});
 	}
+	
 	clearStartAndEndDate(): void {
 		this.projectForm.patchValue({
 			dateRange: []
 		});
+	}
+	
+	confirm(): void {
+		this.confirmSuspendProject();
+		this.modalRef.hide();
+	}
+	decline(): void {
+		this.modalRef.hide();
+	}
+	
+	confirmSuspendProject(): void {
+		this.projSvc.suspendProject(this.projectIdToSuspend)
+					.subscribe(proj => {
+							//console.log('Proj suspendedd:' + JSON.stringify(proj));
+							this.resetForm();
+							this.refreshProjectList();
+							this.projectIdToSuspend = undefined;
+						},
+						error => this.errorMessage = <any>error);
 	}
 
 }
