@@ -25,6 +25,8 @@ export class TaskDetailComponent implements OnInit {
 	orderByKey: string;
 	sortReverse: boolean = false;
 	
+	taskIdToEnd: number;
+	
 	constructor(private taskSvc: TaskService, 
 				private projSvc: ProjectService, 
 				private modalService: BsModalService, 
@@ -46,13 +48,10 @@ export class TaskDetailComponent implements OnInit {
 		this._router.navigate(['/taskupdate/' + taskId]);
 	}
 	
-	endTask(taskId: number): void {
+	endTask(taskId: number, template: TemplateRef<any>): void {
 		//console.log('End Task: ' + taskId);
-		this.taskSvc.endTask(taskId)
-				.subscribe(task => {
-					//console.log('Task ended:' + JSON.stringify(task));
-					this.refreshTaskList();					
-				}, error => this.errorMessage = <any>error);
+		this.taskIdToEnd = taskId;
+		this.showModalPopUp(template);		
 	}	
 	
 	showModalPopUp(template: TemplateRef<any>) {
@@ -88,6 +87,22 @@ export class TaskDetailComponent implements OnInit {
 			this.sortReverse = !this.sortReverse
 		}
 		this.orderByKey = key;
+	}
+	
+	confirm(): void {
+		this.confirmEndTask();
+		this.modalRef.hide();
+	}
+	decline(): void {
+		this.modalRef.hide();
+	}
+	confirmEndTask(): void {
+		this.taskSvc.endTask(this.taskIdToEnd)
+				.subscribe(task => {
+					//console.log('Task ended:' + JSON.stringify(task));
+					this.taskIdToEnd = undefined;
+					this.refreshTaskList();					
+				}, error => this.errorMessage = <any>error);
 	}
 
 }

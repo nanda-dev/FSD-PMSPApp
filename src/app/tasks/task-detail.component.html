@@ -72,7 +72,7 @@
 							</button>
 						</td>
 						<td>
-							<button class="btn btn-default" type="button" (click)='endTask(task.id)' 
+							<button class="btn btn-default" type="button" (click)='endTask(task.id, confirmModal)' 
 								[disabled]="task.status == 'C' ">
 								End Task
 							</button>
@@ -115,4 +115,15 @@
 	<div class="modal-footer text-right">
 		<button class="btn btn-primary" type="button" (click)='closePopUp()'>OK</button>
 	</div>
+</ng-template>
+
+<ng-template #confirmModal>
+	<div class="modal-header">
+		<h4 class="modal-title pull-left">Confirm</h4>
+	</div>
+	<div class="modal-body">
+		<p>You have opted to End the task. Do you wish to proceed?</p>
+		<button type="button" class="btn btn-default" (click)="confirm()" >Yes</button>
+		<button type="button" class="btn btn-primary" (click)="decline()" >No</button>
+	</div>		
 </ng-template>
