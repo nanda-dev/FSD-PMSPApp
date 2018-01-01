@@ -45,6 +45,8 @@ export class TaskAddEditComponent implements OnInit {
 	hasStartDate: boolean = false;
 	isParentTask: boolean = false;
 	
+	bsConfig: Partial<BsDatepickerConfig>;
+	
 	_projectsFilter: string;
 	get projectsFilter(): string {
 		return this._projectsFilter;
@@ -80,7 +82,8 @@ export class TaskAddEditComponent implements OnInit {
 				private _route: ActivatedRoute) { }
 
 	ngOnInit() {
-		
+		//Set theme for date-picker
+		this.bsConfig = Object.assign({}, { containerClass: 'theme-dark-blue'});
 		
 		this.projSvc.getProjects()
                 .subscribe(projects => {

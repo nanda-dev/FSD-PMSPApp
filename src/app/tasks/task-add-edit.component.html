@@ -106,7 +106,7 @@
 									   
 							<div class="col-md-2 col-md-offset-0">
 								<input type="text" class="form-control" placeholder="Start Date" bsDatepicker formControlName="startDate" 
-								(bsValueChange)='changeStartDate($event)' [bsValue]="startDateInitial"/>
+								(bsValueChange)='changeStartDate($event)' [bsValue]="startDateInitial" [bsConfig]="bsConfig"/>
 							</div>	
 							
 							<label class="col-md-2 col-md-offset-0 control-label" 
@@ -114,7 +114,7 @@
 									   
 							<div class="col-md-2 col-md-offset-0">
 								<input type="text" class="form-control" placeholder="End Date" bsDatepicker formControlName="endDate" 
-								(bsValueChange)='changeEndDate($event)' [bsValue]="endDateInitial" [minDate]="taskForm.get('startDate').value"/>
+								(bsValueChange)='changeEndDate($event)' [bsValue]="endDateInitial" [minDate]="taskForm.get('startDate').value" [bsConfig]="bsConfig"/>
 							</div>
 							
 							<span class="help-block col-md-2 col-md-offset-0" 
